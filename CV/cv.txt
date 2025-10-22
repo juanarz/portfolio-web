@@ -1,0 +1,172 @@
+Juan Pablo Arias Remolina
+3177072411juanpablo00444@gmail.com
+juanarzJuan Pablo Arias
+Experiencia
+Auxiliatura - IPRED desarrollo web (2024 - 2025)
+Descripción
+Ingeniero de Sistemas con
+experiencia en desarrollo web full-
+stack y gestión de bases de datos.
+Manejo tecnologías modernas para
+construir, optimizar y escalar
+aplicaciones web. Complemento
+mis habilidades técnicas con
+análisis de datos (SQL, Power BI,
+Excel) para crear soluciones que
+integren desarrollo y toma de
+decisiones basada en datos.
+Desarrollo y soporte del sistema de gestión de
+trabajos de grado.
+Implementación de consultas y validaciones SQL para
+optimizar procesos internos.
+Creación de reportes y pruebas funcionales para
+garantizar la confiabilidad de la información.
+Mejora del rendimiento de bases de datos (MySQL,
+MariaDB) y administración de servidores.
+Tutor de Sistemas de Información (2023)
+Asesoría en bases de datos y desarrollo web.
+Promoción del pensamiento crítico y aprendizaje
+autónomo en herramientas digitales.
+Educación
+Habilidades
+Python
+Java (Spring Boot)
+SQL (MySQL-PostgreSQL-
+MariaDB)
+Excel
+COLEGIO SAN JOSÉ DE GUANENTÁ (2019)
+Bachiller técnico en SIstemas
+UNIVERSIDAD INDUSTRIAL DE SANTANDER (2025)
+Ingeniero de Sistemas
+PowerBI
+Idiomas
+JavaScript (React)
+INGLES -> INTERMEDIO - AVANZADO
+Web Server(Ubuntu, Apache)
+Proyectos
+BiblioPlus - Gestor de préstamos de libros
+Página web para gestión de bibliotecas con Spring Boot, React y MySQL, integrando
+API REST y gestión de datos.
+UILS Plataforma de movilidad compartida
+UILS - Aplicación web para coordinar viajes compartidos, con backend en la
+nube y base de datos en Azure SQL.
+Airline Modelo predictivo de vuelos
+Modelo de IA para clasificación de vuelos (On Time, Delayed, Cancelled) a partir
+de datos históricos y en tiempo real, usando Python y scikit-learn.
+
+
+
+--
+
+Juan Pablo Arias Remolina
+3177072411juanpablo00444@gmail.com
+juanarzJuan Pablo Arias
+Experiencia
+Auxiliatura - IPRED desarrollo web (2024 - 2025)
+Descripción
+Ingeniero de Sistemas con
+experiencia en análisis de datos y
+gestión de información. Enfocado en
+transformar datos en conocimiento
+para la toma de decisiones
+mediante SQL, Excel y Power BI.
+Destaco por mi capacidad analítica
+y habilidades en programación para
+el procesamiento y visualización de
+datos.
+Analicé y optimicé procesos internos relacionados con
+el sistema de gestión de trabajos de grado mediante
+SQL y validación de datos.
+Realicé pruebas funcionales y generé reportes para
+garantizar consistencia y confiabilidad en la
+información.
+Implementé mejoras de rendimiento aplicando
+principios de modelado y administración de bases de
+datos (MySQL, MariaDB).
+Tutor de Sistemas de Información (2023)
+Apoyo en bases de datos y análisis de información,
+promoviendo pensamiento crítico y aprendizaje
+autónomo.
+Educación
+Habilidades
+Python
+Java (Spring Boot)
+SQL (MySQL-PostgreSQL-
+MariaDB)
+Excel
+COLEGIO SAN JOSÉ DE GUANENTÁ (2019)
+Bachiller técnico en SIstemas
+UNIVERSIDAD INDUSTRIAL DE SANTANDER (2025)
+Ingeniero de Sistemas
+PowerBI
+Idiomas
+JavaScript (React)
+Web Server(Ubuntu, Apache)
+INGLES -> INTERMEDIO - AVANZADO
+Proyectos
+Airline Modelo predictivo de vuelos
+Modelo de IA para clasificación de vuelos (On Time, Delayed, Cancelled) a partir de datos
+históricos y en tiempo real, usando Python y scikit-learn.
+UILS Plataforma de movilidad compartida
+UILS - Aplicación web para coordinar viajes compartidos, con backend en la
+nube y base de datos en Azure SQL.
+BiblioPlus - Gestor de préstamos de libros
+Página web para gestión de bibliotecas con Spring Boot, React y MySQL, integrando
+API REST y gestión de datos.
+
+
+------
+
+
+Juan Pablo Arias Remolina
+juanpablo00444@gmail.com • 3177072411 • https://github.com/juanarz
+SUMMARY
+Systems engineer with experience in data analysis, database management, and web development. Skilled in transforming data
+into actionable insights using SQL, Excel, and Power BI, and in building full-stack applications with Spring Boot and React.
+Recognized for analytical skills, problem-solving, and programming abilities for data processing and visualization.
+EXPERIENCE
+Universidad Industrial de Santander, AI-Based Cataract Classification Project
+Aug 2024 - Nov 2024
+Development of a deep learning model to classify cataracts in ocular images using CNN and DNN architectures. The project
+aims to support medical professionals by automating early diagnosis, improving precision, and recommending appropriate
+surgical treatments. Responsibilities included dataset preparation, model training and comparison, and performance evaluation
+for accuracy and efficiency.
+Universidad Industrial de Santander, Information Systems Tutor
+Jan 2023 - Sep 2023
+Supported students in database concepts and information analysis.
+Promoted critical thinking and autonomous learning in information systems.
+IPRED, UIS, Web Development Assistant
+2024 - 2025
+Analyzed and optimized internal processes in the Thesis Management System using SQL and data validation.
+Performed functional testing and generated reports to ensure data reliability.
+Implemented performance improvements with MySQL/MariaDB modeling and administration.
+Universidad Industrial de Santander, Airline – Flight Prediction Model
+Mar 2023 - Jul 2023
+Built an AI model to classify flights (On Time, Delayed, Cancelled) using historical and real-time data.
+Tools: Python, pandas, scikit-learn.
+Universidad Industrial de Santander, UILS – Shared Mobility Web Platform
+Jan 2024 - Apr 2024
+Developed a web app for coordinating carpooling trips with cloud-based backend and Azure SQL.
+Tools: Ionic, Spring Boot, Azure SQL.
+Universidad Industrial de Santander, BiblioPlus – Library Loan Manager
+May 2024 - Nov 2024
+Created a full-stack web application for library management with REST API integration.
+Tools: Spring Boot, React, MySQL.
+EDUCATION
+UNIVERSIDAD INDUSTRIAL DE SANTANDER
+Systems Engineer • Computer Science and Information Systems • 2020 - 2025
+Developed strong skills in software development, databases, and data analysis. Participated in projects involving web systems,
+artificial intelligence, and information security. Focused on applying technology to solve real-world problems through innovation
+and data-driven decision-making.
+COLEGIO SAN JOSÉ DE GUANENTÁ
+Technical High School in Systems • Information Technology and Systems • 2014 - 2019
+Completed a technical high school focused on computer systems, programming, and network management, gaining hands-on
+experience in software and database administration.
+LICENSES & CERTIFICATIONS
+SQL Essential Training
+LinkedIn Learning Community • 6cc167b1a7c3276372642edce898235fb3d8c44a235ff05d592c0409d2c810b4 • Issued Oct
+2025
+Juan Pablo Arias Remolina - page 1 of 2SKILLS
+Python • Java (Spring Boot) • SQL (MySQL-PostgreSQL-MariaDB) • Excel • PowerBI • JavaScript (React) • Web
+Server(Ubuntu, Apache) • Spanish: Native • English: Intermediate – Advanced • Microsoft Azure
+Juan Pablo Arias Remolina - page 2 of 2
