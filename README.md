@@ -1,15 +1,15 @@
-# Portfolio Website
+# 🌟 Portfolio Web - Juan Pablo Arias
 
-A modern, responsive portfolio website built with React, Vite, and TailwindCSS.
+Un portafolio web moderno y responsivo desarrollado con React, Vite y Tailwind CSS.
 
-## Features
+## ✨ Características
 
-- 🎨 Dark theme design
-- 📱 Fully responsive
-- ⚡ Fast performance with Vite
-- 🎭 Smooth animations with Framer Motion
-- 🎯 SEO optimized
-- 🔤 Font Awesome icons
+- 🎨 **Diseño Moderno**: Interfaz elegante con efectos glass morphism
+- 🌙 **Modo Oscuro/Claro**: Toggle dinámico con persistencia de preferencias
+- ⚡ **Estados de Carga**: Skeleton loaders y animaciones suaves
+- 📱 **Responsive**: Optimizado para móvil y desktop
+- 🚀 **Performance**: Construido con Vite para carga rápida
+- 🎭 **Animaciones**: Transiciones suaves y efectos visuales
 
 ## Tech Stack
 
