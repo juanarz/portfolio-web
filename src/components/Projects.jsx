@@ -11,7 +11,7 @@ const Projects = () => {
       technologies: ['Spring Boot', 'React', 'MySQL', 'REST API'],
       github: 'https://github.com/juanarz/Tienda_BiBlioPlus_react',
       live: null,
-      image: 'public/BiblioPlus.jpeg',
+      image: '/BiblioPlus.jpeg',
       period: 'May 2024 - Nov 2024'
     },
     {
@@ -21,7 +21,7 @@ const Projects = () => {
       technologies: ['Ionic', 'Spring Boot', 'Azure SQL', 'Cloud'],
       github: 'https://github.com/juanarz/uils',
       live: null,
-      image: 'public/uils.png',
+      image: '/uils.png',
       period: 'Jan 2024 - Apr 2024'
     },
     {
@@ -31,7 +31,7 @@ const Projects = () => {
       technologies: ['Python', 'scikit-learn', 'pandas', 'Machine Learning'],
       github: 'https://github.com/juanarz/Airline ',
       live: null,
-      image: 'public/Airline-project.jpeg',
+      image: '/Airline-project.jpeg',
       period: 'Mar 2023 - Jul 2023'
     },
     {
@@ -41,7 +41,7 @@ const Projects = () => {
       technologies: ['Python', 'TensorFlow', 'CNN', 'DNN', 'Deep Learning'],
       github: 'https://github.com/juanarz/Clasificaci-n-Cataratas',
       live: null,
-      image: 'public/clasificacion-cataratas.png',
+      image: '/clasificacion-cataratas.png',
       period: 'Aug 2024 - Nov 2024'
     },
   ]
