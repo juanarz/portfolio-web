@@ -33,7 +33,9 @@ const handleSubmit = async (e) => {
       {
         from_name: formData.name,
         from_email: formData.email,
-        message: formData.message
+        message: formData.message,
+        to_email: 'your-email@example.com',  // Add your email here
+        subject: `New message from ${formData.name} - Portfolio Contact Form`
       }
     );
     
