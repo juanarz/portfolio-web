@@ -24,6 +24,7 @@ const Hero = () => {
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
           Juan Pablo
         </h1>
+    
 
         {/* Title */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-gray-400 mb-6 animate-slide-up">

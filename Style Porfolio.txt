@@ -40,7 +40,7 @@ svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
 }
 .svg-inline--fa.fa-2xl {
   vertical-align: -0.3125em;
-}
+} 
 .svg-inline--fa.fa-pull-left {
   margin-right: var(--fa-pull-margin, 0.3em);
   width: auto;
