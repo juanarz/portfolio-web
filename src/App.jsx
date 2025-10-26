@@ -8,6 +8,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
 import SimpleLoadingScreen from './components/SimpleLoadingScreen'
+import Experience from './components/Experience'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -63,6 +64,7 @@ function App() {
       <main>
         <Hero />
         <About />
+        <Experience />
         <Skills />
         <Projects />
         <Contact />
