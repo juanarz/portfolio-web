@@ -13,9 +13,12 @@ export default {
           dark: '#1e40af',
         },
         dark: {
-          bg: '#0a0a0a',
-          card: '#1a1a1a',
-          border: '#2a2a2a',
+          bg: '#0f172a',        // Dark blue-gray background
+          card: '#1e293b',      // Slightly lighter for cards
+          'card-hover': '#334155', // Hover state for cards
+          border: '#334155',     // Border color
+          text: '#f8fafc',       // Light text
+          'text-muted': '#94a3b8' // Muted text
         }
       },
       fontFamily: {

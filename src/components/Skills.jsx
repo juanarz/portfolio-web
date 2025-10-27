@@ -38,7 +38,7 @@ const Skills = () => {
   ]
 
   return (
-    <section id="skills" className="py-20 px-4 bg-slate-100/50 dark:bg-dark-card/30">
+    <section id="skills" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
@@ -51,7 +51,7 @@ const Skills = () => {
         {/* Skills Grid */}
         <div className="grid md:grid-cols-3 gap-8">
           {skillCategories.map((category, index) => (
-            <div key={index} className="glass-effect p-6 rounded-lg">
+            <div key={index} className="bg-white dark:bg-dark-card p-6 rounded-lg shadow-md border border-transparent dark:border-dark-border">
               <h3 className="text-2xl font-semibold mb-6 text-center">
                 {category.title}
               </h3>
@@ -65,7 +65,9 @@ const Skills = () => {
                       icon={skill.icon}
                       className={`h-8 w-8 ${skill.color} group-hover:scale-110 transition-transform duration-300`}
                     />
-                    <span className="text-lg font-medium">{skill.name}</span>
+                    <div className="w-full">
+                      <span className="text-lg font-medium">{skill.name}</span>
+                    </div>
                   </div>
                 ))}
               </div>

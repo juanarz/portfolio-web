@@ -30,7 +30,7 @@ const experiences = [
 
 const Experience = () => {
   return (
-    <section id="experience" className="py-20 px-4 bg-slate-100/50 dark:bg-dark-card/30">
+    <section id="experience" className="py-20 px-4">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -53,7 +53,7 @@ const Experience = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="glass-effect p-6 rounded-lg hover:bg-slate-200/50 dark:bg-white/5 dark:hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]"
+              className="glass-effect p-6 rounded-lg hover:bg-slate-200/50 dark:bg-dark-card dark:hover:bg-dark-card-hover transition-all duration-300 transform hover:scale-[1.02] border border-transparent dark:border-dark-border"
             >
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
