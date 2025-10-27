@@ -31,7 +31,7 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-        scrolled ? 'navbar-glass shadow-lg' : 'bg-transparent'
+        scrolled ? 'bg-white/80 dark:bg-dark-card/90 shadow-lg backdrop-blur-sm' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,19 +43,19 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex items-center space-x-8">
-            <a href="#home" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-medium">Home</a>
-            <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-medium">About</a>
-            <a href="#experience" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-medium">Work</a>
-            <a href="#skills" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-medium">Skills</a>
-            <a href="#projects" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-medium">Projects</a>
-            <a href="#contact" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-medium">Contact</a>
+            <a href="#home" className="text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Home</a>
+            <a href="#about" className="text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 font-medium">About</a>
+            <a href="#experience" className="text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Work</a>
+            <a href="#skills" className="text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Skills</a>
+            <a href="#projects" className="text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Projects</a>
+            <a href="#contact" className="text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Contact</a>
             <ThemeToggle />
           </div>
 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none transition-all duration-300"
+            className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-slate-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-200/50 dark:hover:bg-white/10 focus:outline-none transition-all duration-300"
           >
             <FontAwesomeIcon icon={isOpen ? faTimes : faBars} className="h-6 w-6" />
           </button>
@@ -74,7 +74,7 @@ const Navbar = () => {
               key={link.name}
               href={link.href}
               onClick={handleLinkClick}
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300"
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-200/50 dark:hover:bg-white/10 transition-all duration-300"
             >
               {link.name}
             </a>
