@@ -24,4 +24,18 @@ export const experiences = [
       'Fostered critical thinking and autonomous learning skills.',
     ],
   },
+  {
+    id: 3,
+    role: 'Ingeniero de Desarrolo',
+    company: 'Macpollo, AVSA SA',
+    period: 'Dec 2025 - Currently',
+    icon: FaDatabase,
+    achievements: [
+      'Full stack development with Spring Boot and Angular.',
+      'REST API implementation using MVC and Hexagonal Architecture.',
+      'AWS S3 and SAP backend integration.',
+      'SQL Server and PostgreSQL management.',
+      'Deployment with Docker Compose and Bitvise.',
+    ],
+  },
 ]

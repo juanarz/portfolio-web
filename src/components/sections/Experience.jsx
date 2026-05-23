@@ -22,6 +22,7 @@ const Experience = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {experiences.map((exp, index) => {
             const Icon = exp.icon
+            const isLastOdd = experiences.length % 2 !== 0 && index === experiences.length - 1
 
             return (
               <motion.div
@@ -30,7 +31,9 @@ const Experience = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="glass-effect p-6 rounded-lg hover:bg-slate-200/50 dark:bg-dark-card dark:hover:bg-dark-card-hover transition-all duration-300 transform hover:scale-[1.02] border border-transparent dark:border-dark-border"
+                className={`glass-effect p-6 rounded-lg hover:bg-slate-200/50 dark:bg-dark-card dark:hover:bg-dark-card-hover transition-all duration-300 transform hover:scale-[1.02] border border-transparent dark:border-dark-border ${
+                  isLastOdd ? 'md:col-span-2 md:max-w-3xl md:mx-auto' : ''
+                }`}
               >
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
