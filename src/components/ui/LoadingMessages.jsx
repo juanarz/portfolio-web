@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react'
 import { loadingMessages } from '../../data/loadingMessages'
+import { useLanguage } from '../../context/LanguageContext'
 
 const LoadingMessages = () => {
   const [currentMessage, setCurrentMessage] = useState(0)
+  const { language } = useLanguage()
+  const messages = loadingMessages[language]
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentMessage((prev) => (prev + 1) % loadingMessages.length)
+      setCurrentMessage((prev) => (prev + 1) % messages.length)
     }, 400) // Cambia cada 400ms
 
     return () => clearInterval(interval)
-  }, [])
+  }, [messages.length])
 
   return (
     <div className="text-center mb-8">
       <p className="text-slate-600 dark:text-gray-400 text-lg font-medium animate-pulse">
-        {loadingMessages[currentMessage]}
+        {messages[currentMessage]}
       </p>
     </div>
   )

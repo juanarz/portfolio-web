@@ -1,15 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGraduationCap, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { aboutContent } from '../../data/about'
+import { useLanguage } from '../../context/LanguageContext'
 
 const About = () => {
+  const { language } = useLanguage()
+  const content = aboutContent[language]
+
   return (
     <section id="about" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            About <span className="text-gradient">Me</span>
+            {content.sectionTitle} <span className="text-gradient">{content.sectionHighlight}</span>
           </h2>
           <div className="w-20 h-1 bg-blue-500 mx-auto"></div>
         </div>
@@ -18,7 +22,7 @@ const About = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <div className="space-y-4">
-            {aboutContent.paragraphs.map((paragraph, index) => (
+            {content.paragraphs.map((paragraph, index) => (
               <p
                 key={index}
                 className="text-slate-600 dark:text-gray-300 text-lg leading-relaxed"
@@ -30,7 +34,7 @@ const About = () => {
 
           {/* Features Grid */}
           <div className="grid gap-6">
-            {aboutContent.features.map((feature, index) => (
+            {content.features.map((feature, index) => (
               <div
                 key={index}
                 className="glass-effect p-6 rounded-lg hover:bg-slate-200/50 dark:hover:bg-white/10 transition-all duration-300 transform hover:scale-105"
@@ -59,13 +63,13 @@ const About = () => {
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold mb-4">
               <FontAwesomeIcon icon={faGraduationCap} className="mr-3 text-blue-400" />
-              Education
+              {content.educationTitle}
             </h3>
             <div className="w-16 h-1 bg-blue-500 mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {aboutContent.education.map((edu, index) => (
+            {content.education.map((edu, index) => (
               <div
                 key={index}
                 className="glass-effect p-6 rounded-lg hover:bg-slate-200/50 dark:hover:bg-white/10 transition-all duration-300"

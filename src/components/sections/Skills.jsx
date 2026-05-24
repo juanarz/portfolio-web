@@ -1,21 +1,25 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { skillCategories } from '../../data/skills'
+import { skillsContent } from '../../data/skills'
+import { useLanguage } from '../../context/LanguageContext'
 
 const Skills = () => {
+  const { language } = useLanguage()
+  const content = skillsContent[language]
+
   return (
     <section id="skills" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            My <span className="text-gradient">Skills</span>
+            {content.title} <span className="text-gradient">{content.highlight}</span>
           </h2>
           <div className="w-20 h-1 bg-blue-500 mx-auto"></div>
         </div>
 
         {/* Skills Grid */}
         <div className="grid md:grid-cols-3 gap-8">
-          {skillCategories.map((category, index) => (
+          {content.categories.map((category, index) => (
             <div
               key={index}
               className="bg-white dark:bg-dark-card p-6 rounded-lg shadow-md border border-transparent dark:border-dark-border"

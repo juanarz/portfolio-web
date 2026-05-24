@@ -1,16 +1,25 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
-import { projects } from '../../data/projects'
+import { projectsContent } from '../../data/projects'
+import { useLanguage } from '../../context/LanguageContext'
 
 const Projects = () => {
+  const { language } = useLanguage()
+  const content = projectsContent[language]
+  const projects = content.items
+  const labels = {
+    github: language === 'en' ? 'GitHub' : 'GitHub',
+    live: language === 'en' ? 'Live Demo' : 'Demo en vivo',
+  }
+
   return (
     <section id="projects" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            Featured <span className="text-gradient">Projects</span>
+            {content.title} <span className="text-gradient">{content.highlight}</span>
           </h2>
           <div className="w-20 h-1 bg-blue-500 mx-auto"></div>
         </div>
@@ -68,7 +77,7 @@ const Projects = () => {
                     className="flex items-center space-x-2 text-slate-600 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-colors duration-300"
                   >
                     <FontAwesomeIcon icon={faGithub} />
-                    <span>GitHub</span>
+                    <span>{labels.github}</span>
                   </a>
                   {project.live && (
                     <a
@@ -78,7 +87,7 @@ const Projects = () => {
                       className="flex items-center space-x-2 text-slate-600 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-colors duration-300"
                     >
                       <FontAwesomeIcon icon={faExternalLinkAlt} />
-                      <span>Live Demo</span>
+                      <span>{labels.live}</span>
                     </a>
                   )}
                 </div>

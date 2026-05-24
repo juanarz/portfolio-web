@@ -1,8 +1,13 @@
 import { motion } from 'framer-motion'
 import { FaCalendar } from 'react-icons/fa'
-import { experiences } from '../../data/experience'
+import { experienceContent } from '../../data/experience'
+import { useLanguage } from '../../context/LanguageContext'
 
 const Experience = () => {
+  const { language } = useLanguage()
+  const content = experienceContent[language]
+  const experiences = content.items
+
   return (
     <section id="experience" className="py-20 px-4">
       <div className="container mx-auto px-4">
@@ -14,7 +19,7 @@ const Experience = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold mb-4">
-            Work <span className="text-gradient">Experience</span>
+            {content.title} <span className="text-gradient">{content.highlight}</span>
           </h2>
           <div className="w-20 h-1 bg-blue-500 mx-auto"></div>
         </motion.div>

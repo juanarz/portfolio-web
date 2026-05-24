@@ -1,22 +1,23 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ContactForm from '../ui/ContactForm'
 import { contactContent } from '../../data/contact'
+import { useLanguage } from '../../context/LanguageContext'
 
 const Contact = () => {
+  const { language } = useLanguage()
+  const content = contactContent[language]
+
   return (
     <section id="contact" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            {contactContent.heading.split(' ').slice(0, 2).join(' ')}{' '}
-            <span className="text-gradient">
-              {contactContent.heading.split(' ').slice(2).join(' ')}
-            </span>
+            {content.heading} <span className="text-gradient">{content.highlight}</span>
           </h2>
           <div className="w-20 h-1 bg-blue-500 mx-auto mb-4"></div>
           <p className="text-slate-600 dark:text-gray-400 text-lg">
-            {contactContent.subheading}
+            {content.subheading}
           </p>
         </div>
 
@@ -24,9 +25,9 @@ const Contact = () => {
           {/* Contact Info */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
+              <h3 className="text-2xl font-semibold mb-6">{content.infoTitle}</h3>
               <div className="space-y-4">
-                {contactContent.contactInfo.map((info, index) => (
+                {content.contactInfo.map((info, index) => (
                   <div key={index} className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                       <FontAwesomeIcon
@@ -54,9 +55,9 @@ const Contact = () => {
 
             {/* Social Links */}
             <div>
-              <h3 className="text-2xl font-semibold mb-6">Follow Me</h3>
+              <h3 className="text-2xl font-semibold mb-6">{content.followTitle}</h3>
               <div className="flex space-x-4">
-                {contactContent.socialLinks.map((social, index) => (
+                {content.socialLinks.map((social, index) => (
                   <a
                     key={index}
                     href={social.link}

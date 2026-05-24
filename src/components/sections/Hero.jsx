@@ -1,43 +1,47 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { heroContent } from '../../data/hero'
+import { useLanguage } from '../../context/LanguageContext'
 
 const Hero = () => {
+  const { language } = useLanguage()
+  const content = heroContent[language]
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-16">
       <div className="max-w-4xl mx-auto text-center animate-fade-in">
         {/* Profile Picture */}
         <div className="mb-8 animate-slide-up">
           <img
-            src={heroContent.profileImage}
-            alt={heroContent.name}
+            src={content.profileImage}
+            alt={content.name}
             className="w-32 h-32 sm:w-56 sm:h-56 rounded-full mx-auto  hover:scale-105 transition-transform duration-300"
           />
         </div>
 
         {/* Greeting */}
         <p className="text-blue-500 dark:text-blue-400 text-lg mb-4 animate-slide-up">
-          {heroContent.greeting}
+          {content.greeting}
         </p>
 
         {/* Name */}
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
-          {heroContent.name}
+          {content.name}
         </h1>
 
         {/* Title */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-gray-400 mb-6 animate-slide-up">
-          {heroContent.title}
+          {content.title}
         </h2>
 
         {/* Description */}
         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl mx-auto mb-8 animate-slide-up">
-          {heroContent.description}
+          {content.description}
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
-          {heroContent.ctas.map((cta) => (
+          {content.ctas.map((cta) => (
             <a
               key={cta.href}
               href={cta.href}
@@ -54,7 +58,7 @@ const Hero = () => {
 
         {/* Social Links */}
         <div className="flex justify-center space-x-6 mb-12 animate-slide-up">
-          {heroContent.socialLinks.map((social) => (
+          {content.socialLinks.map((social) => (
             <a
               key={social.label}
               href={social.href}
@@ -70,7 +74,7 @@ const Hero = () => {
 
         {/* Scroll Indicator */}
         <a
-          href={heroContent.scrollTarget}
+          href={content.scrollTarget}
           className="inline-block text-slate-600 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-all duration-300 animate-bounce"
         >
           <FontAwesomeIcon icon={faArrowDown} className="h-6 w-6" />

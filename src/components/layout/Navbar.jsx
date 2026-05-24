@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
 import ThemeToggle from '../ui/ThemeToggle'
+import LanguageToggle from '../ui/LanguageToggle'
 import { navLinks } from '../../data/navigation'
+import { useLanguage } from '../../context/LanguageContext'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { language } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,7 +38,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex items-center space-x-8">
-            {navLinks.map((link) => (
+            {navLinks[language].map((link) => (
               <a
                 key={link.name}
                 href={link.href}
@@ -44,6 +47,7 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
+            <LanguageToggle />
             <ThemeToggle />
           </div>
 
@@ -64,7 +68,7 @@ const Navbar = () => {
         }`}
       >
         <div className="px-2 pt-2 pb-3 space-y-1 glass-effect">
-          {navLinks.map((link) => (
+          {navLinks[language].map((link) => (
             <a
               key={link.name}
               href={link.href}
@@ -74,7 +78,8 @@ const Navbar = () => {
               {link.name}
             </a>
           ))}
-          <div className="px-3 py-2">
+          <div className="px-3 py-2 flex items-center gap-3">
+            <LanguageToggle />
             <ThemeToggle />
           </div>
         </div>
