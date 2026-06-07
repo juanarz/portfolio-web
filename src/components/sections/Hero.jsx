@@ -8,22 +8,22 @@ import TypewriterCarousel from '../ui/TypewriterCarousel'
 import { stickers as stickerImages } from '../../assets/stickers'
 
 const profileStickers = [
-  { id: 1, image: stickerImages[0], initialX: -70, initialY: -35, finalX: -170, finalY: -45, mobileInitialX: -48, mobileInitialY: -26, mobileFinalX: -96, mobileFinalY: -38 },
-  { id: 2, image: stickerImages[1], initialX: 70, initialY: -32, finalX: 175, finalY: -86, mobileInitialX: 48, mobileInitialY: -24, mobileFinalX: 92, mobileFinalY: -58 },
-  { id: 3, image: stickerImages[2], initialX: -62, initialY: 80, finalX: -95, finalY: 132, mobileInitialX: -42, mobileInitialY: 56, mobileFinalX: -78, mobileFinalY: 88 },
-  { id: 4, image: stickerImages[3], initialX: 72, initialY: 88, finalX: 162, finalY: 74, mobileInitialX: 46, mobileInitialY: 58, mobileFinalX: 92, mobileFinalY: 62 },
-  { id: 5, image: stickerImages[4], initialX: -78, initialY: 40, finalX: -150, finalY: 62, mobileInitialX: -50, mobileInitialY: 28, mobileFinalX: -92, mobileFinalY: 44 },
-  { id: 6, image: stickerImages[5], initialX: 68, initialY: 38, finalX: 116, finalY: -144, mobileInitialX: 46, mobileInitialY: 28, mobileFinalX: 78, mobileFinalY: -88 },
-  { id: 7, image: stickerImages[6], initialX: -50, initialY: -58, finalX: -134, finalY: -125, mobileInitialX: -34, mobileInitialY: -42, mobileFinalX: -84, mobileFinalY: -82 },
-  { id: 8, image: stickerImages[7], initialX: 56, initialY: 70, finalX: 94, finalY: 138, mobileInitialX: 38, mobileInitialY: 48, mobileFinalX: 70, mobileFinalY: 88 },
-  { id: 9, image: stickerImages[8], initialX: -52, initialY: 92, finalX: -168, finalY: 86, mobileInitialX: -36, mobileInitialY: 64, mobileFinalX: -96, mobileFinalY: 66 },
-  { id: 10, image: stickerImages[9], initialX: 76, initialY: 42, finalX: 158, finalY: -122, mobileInitialX: 48, mobileInitialY: 30, mobileFinalX: 98, mobileFinalY: -76 },
-  { id: 11, image: stickerImages[10], initialX: -78, initialY: -20, finalX: 172, finalY: 14, mobileInitialX: -50, mobileInitialY: -14, mobileFinalX: 100, mobileFinalY: 10 },
-  { id: 12, image: stickerImages[11], initialX: 42, initialY: -70, finalX: 150, finalY: 118, mobileInitialX: 30, mobileInitialY: -48, mobileFinalX: 94, mobileFinalY: 76 },
-  { id: 13, image: stickerImages[12], initialX: -46, initialY: 108, finalX: 118, finalY: -58, mobileInitialX: -30, mobileInitialY: 70, mobileFinalX: 82, mobileFinalY: -44 },
-  { id: 14, image: stickerImages[13], initialX: 82, initialY: 16, finalX: -178, finalY: -82, mobileInitialX: 52, mobileInitialY: 14, mobileFinalX: -102, mobileFinalY: -62 },
-  { id: 15, image: stickerImages[14], initialX: -38, initialY: 54, finalX: -130, finalY: 118, mobileInitialX: -28, mobileInitialY: 38, mobileFinalX: -82, mobileFinalY: 76 },
-  { id: 16, image: stickerImages[15], initialX: 50, initialY: -44, finalX: -172, finalY: 48, mobileInitialX: 34, mobileInitialY: -32, mobileFinalX: -96, mobileFinalY: 36 },
+  { id: 1, image: stickerImages[0], initialX: -72, initialY: -64, finalX: -172, finalY: -132, mobileInitialX: -48, mobileInitialY: -42, mobileFinalX: -104, mobileFinalY: -88 },
+  { id: 2, image: stickerImages[1], initialX: -78, initialY: -28, finalX: -196, finalY: -86, mobileInitialX: -52, mobileInitialY: -20, mobileFinalX: -118, mobileFinalY: -58 },
+  { id: 3, image: stickerImages[2], initialX: -80, initialY: 8, finalX: -184, finalY: -38, mobileInitialX: -54, mobileInitialY: 4, mobileFinalX: -112, mobileFinalY: -28 },
+  { id: 4, image: stickerImages[3], initialX: -80, initialY: 44, finalX: -196, finalY: 10, mobileInitialX: -54, mobileInitialY: 30, mobileFinalX: -118, mobileFinalY: 4 },
+  { id: 5, image: stickerImages[4], initialX: -76, initialY: 80, finalX: -178, finalY: 58, mobileInitialX: -50, mobileInitialY: 52, mobileFinalX: -108, mobileFinalY: 36 },
+  { id: 6, image: stickerImages[5], initialX: -68, initialY: 116, finalX: -150, finalY: 106, mobileInitialX: -46, mobileInitialY: 74, mobileFinalX: -96, mobileFinalY: 68 },
+  { id: 7, image: stickerImages[6], initialX: -38, initialY: 118, finalX: -118, finalY: 118, mobileInitialX: -28, mobileInitialY: 78, mobileFinalX: -80, mobileFinalY: 78 },
+  { id: 8, image: stickerImages[7], initialX: -4, initialY: 124, finalX: -58, finalY: 128, mobileInitialX: -4, mobileInitialY: 82, mobileFinalX: -44, mobileFinalY: 84 },
+  { id: 9, image: stickerImages[8], initialX: 72, initialY: -64, finalX: 172, finalY: -132, mobileInitialX: 48, mobileInitialY: -42, mobileFinalX: 104, mobileFinalY: -88 },
+  { id: 10, image: stickerImages[9], initialX: 78, initialY: -28, finalX: 196, finalY: -86, mobileInitialX: 52, mobileInitialY: -20, mobileFinalX: 118, mobileFinalY: -58 },
+  { id: 11, image: stickerImages[10], initialX: 80, initialY: 8, finalX: 184, finalY: -38, mobileInitialX: 54, mobileInitialY: 4, mobileFinalX: 112, mobileFinalY: -28 },
+  { id: 12, image: stickerImages[11], initialX: 80, initialY: 44, finalX: 196, finalY: 10, mobileInitialX: 54, mobileInitialY: 30, mobileFinalX: 118, mobileFinalY: 4 },
+  { id: 13, image: stickerImages[12], initialX: 76, initialY: 80, finalX: 178, finalY: 58, mobileInitialX: 50, mobileInitialY: 52, mobileFinalX: 108, mobileFinalY: 36 },
+  { id: 14, image: stickerImages[13], initialX: 68, initialY: 116, finalX: 150, finalY: 106, mobileInitialX: 46, mobileInitialY: 74, mobileFinalX: 96, mobileFinalY: 68 },
+  { id: 15, image: stickerImages[14], initialX: 38, initialY: 118, finalX: 118, finalY: 118, mobileInitialX: 28, mobileInitialY: 78, mobileFinalX: 80, mobileFinalY: 78 },
+  { id: 16, image: stickerImages[15], initialX: 4, initialY: 124, finalX: 58, finalY: 128, mobileInitialX: 4, mobileInitialY: 82, mobileFinalX: 44, mobileFinalY: 84 },
 ]
 
 const Hero = () => {
@@ -108,9 +108,9 @@ const Hero = () => {
     <section ref={sectionRef} id="home" className="min-h-screen flex items-center justify-center px-4 pt-16 overflow-hidden">
       <div className="max-w-4xl mx-auto text-center animate-fade-in">
         {/* Profile Picture */}
-        <div className="relative mb-8 flex items-center justify-center animate-slide-up">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {profileStickers.map((sticker) => {
+        <div className="relative z-0 mb-8 flex items-center justify-center animate-slide-up">
+          <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+            {isIntroComplete && profileStickers.map((sticker) => {
               const isVerySmall = window.innerWidth < 375
               const isMobile = window.innerWidth < 768
 
@@ -119,7 +119,7 @@ const Hero = () => {
                   key={sticker.id}
                   src={sticker.image}
                   alt=""
-                  className="absolute z-0 select-none"
+                  className="absolute select-none animate-fade-in"
                   style={getStickerStyle(sticker)}
                   loading={sticker.id <= 4 ? 'eager' : 'lazy'}
                   decoding="async"
@@ -137,7 +137,7 @@ const Hero = () => {
         </div>
 
         {/* Animated intro */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
+        <h1 className="relative z-20 text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
           <AsciiMorphText
             text="Hi, I'm Juan Pablo"
             onComplete={handleIntroComplete}
