@@ -7,6 +7,7 @@ import Skills from './components/sections/Skills'
 import Contact from './components/sections/Contact'
 import Footer from './components/layout/Footer'
 import Experience from './components/sections/Experience'
+import SocialStats from './components/ui/SocialStats'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -65,6 +66,7 @@ function App() {
         <Experience />
         <Skills />
         <Projects />
+  <SocialStats />
         <Contact />
       </main>
       <Footer />

@@ -5,6 +5,7 @@ export const navLinks = {
     { name: 'Work', href: '#experience' },
     { name: 'Skills', href: '#skills' },
     { name: 'Projects', href: '#projects' },
+    { name: 'Social Media', href: '#social-stats' },
     { name: 'Contact', href: '#contact' },
   ],
   es: [
@@ -13,6 +14,7 @@ export const navLinks = {
     { name: 'Experiencia', href: '#experience' },
     { name: 'Habilidades', href: '#skills' },
     { name: 'Proyectos', href: '#projects' },
+    { name: 'Redes Sociales', href: '#social-stats' },
     { name: 'Contacto', href: '#contact' },
   ],
 }
