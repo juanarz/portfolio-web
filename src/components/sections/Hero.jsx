@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { heroContent } from '../../data/hero'
@@ -6,6 +7,7 @@ import AsciiMorphText from '../ui/AsciiMorphText'
 import TypewriterCarousel from '../ui/TypewriterCarousel'
 
 const Hero = () => {
+  const [isIntroComplete, setIsIntroComplete] = useState(false)
   const { language } = useLanguage()
   const content = heroContent[language]
   const rolePrefix = language === 'es' ? 'Soy ' : 'I am a '
@@ -13,6 +15,9 @@ const Hero = () => {
     ? ['Ingeniero de Sistemas', 'Desarrollador Full-Stack']
     : ['Systems Engineer', 'Full-Stack Developer']
   const roleLineWidth = `${rolePrefix.trim().length + Math.max(...roles.map((role) => role.length)) + 2}ch`
+  const handleIntroComplete = useCallback(() => {
+    setIsIntroComplete(true)
+  }, [])
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-16">
@@ -28,18 +33,25 @@ const Hero = () => {
 
         {/* Animated intro */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
-          <AsciiMorphText text="Hi, I'm Juan Pablo" />
+          <AsciiMorphText
+            text="Hi, I'm Juan Pablo"
+            onComplete={handleIntroComplete}
+          />
         </h1>
 
         {/* Animated role */}
         <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-gray-400 mb-8 animate-slide-up text-center">
-          <span
-            className="inline-flex max-w-full items-baseline justify-center"
-            style={{ width: roleLineWidth }}
-          >
-            <span className="mr-[0.25em] whitespace-nowrap">{rolePrefix.trim()}</span>
-            <TypewriterCarousel roles={roles} />
-          </span>
+          {isIntroComplete ? (
+            <span
+              className="inline-flex max-w-full items-baseline justify-center"
+              style={{ width: roleLineWidth }}
+            >
+              <span className="mr-[0.25em] whitespace-nowrap">{rolePrefix.trim()}</span>
+              <TypewriterCarousel roles={roles} />
+            </span>
+          ) : (
+            <span className="invisible">I am a Systems Engineer</span>
+          )}
         </h2>
 
         {/* CTA Buttons */}

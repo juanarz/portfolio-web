@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 
-const AsciiMorphText = ({ text, className = '' }) => {
+const AsciiMorphText = ({ text, className = '', onComplete }) => {
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -9,6 +9,7 @@ const AsciiMorphText = ({ text, className = '' }) => {
     const letters = text.split('')
     const timeouts = []
     const intervals = []
+    let completedLetters = 0
 
     if (!containerRef.current) return undefined
 
@@ -40,6 +41,11 @@ const AsciiMorphText = ({ text, className = '' }) => {
             span.style.opacity = '1'
             span.style.color = 'currentColor'
             window.clearInterval(interval)
+            completedLetters += 1
+
+            if (completedLetters === letters.length) {
+              onComplete?.()
+            }
           }
 
           iterations += 1
@@ -55,7 +61,7 @@ const AsciiMorphText = ({ text, className = '' }) => {
       timeouts.forEach((timeout) => window.clearTimeout(timeout))
       intervals.forEach((interval) => window.clearInterval(interval))
     }
-  }, [text])
+  }, [onComplete, text])
 
   return (
     <span
@@ -73,6 +79,7 @@ const AsciiMorphText = ({ text, className = '' }) => {
 AsciiMorphText.propTypes = {
   text: PropTypes.string.isRequired,
   className: PropTypes.string,
+  onComplete: PropTypes.func,
 }
 
 export default AsciiMorphText
