@@ -2,10 +2,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { heroContent } from '../../data/hero'
 import { useLanguage } from '../../context/LanguageContext'
+import AsciiMorphText from '../ui/AsciiMorphText'
+import TypewriterCarousel from '../ui/TypewriterCarousel'
 
 const Hero = () => {
   const { language } = useLanguage()
   const content = heroContent[language]
+  const rolePrefix = language === 'es' ? 'Soy ' : 'I am a '
+  const roles = language === 'es'
+    ? ['Ingeniero de Sistemas', 'Desarrollador Full-Stack']
+    : ['Systems Engineer', 'Full-Stack Developer']
+  const roleLineWidth = `${rolePrefix.trim().length + Math.max(...roles.map((role) => role.length)) + 2}ch`
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-16">
@@ -19,25 +26,21 @@ const Hero = () => {
           />
         </div>
 
-        {/* Greeting */}
-        <p className="text-blue-500 dark:text-blue-400 text-lg mb-4 animate-slide-up">
-          {content.greeting}
-        </p>
-
-        {/* Name */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
-          {content.name}
+        {/* Animated intro */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-slide-up text-slate-800 dark:text-white">
+          <AsciiMorphText text="Hi, I'm Juan Pablo" />
         </h1>
 
-        {/* Title */}
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-gray-400 mb-6 animate-slide-up">
-          {content.title}
+        {/* Animated role */}
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-gray-400 mb-8 animate-slide-up text-center">
+          <span
+            className="inline-flex max-w-full items-baseline justify-center"
+            style={{ width: roleLineWidth }}
+          >
+            <span className="mr-[0.25em] whitespace-nowrap">{rolePrefix.trim()}</span>
+            <TypewriterCarousel roles={roles} />
+          </span>
         </h2>
-
-        {/* Description */}
-        <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl mx-auto mb-8 animate-slide-up">
-          {content.description}
-        </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
