@@ -190,6 +190,7 @@ export default function DomeGallery({
     const rotationRef = useRef({ x: 0, y: 0 });
     const startRotRef = useRef({ x: 0, y: 0 });
     const startPosRef = useRef(null);
+    const dragAxisRef = useRef(null);
     const draggingRef = useRef(false);
     const cancelTapRef = useRef(false);
     const movedRef = useRef(false);
@@ -380,9 +381,8 @@ export default function DomeGallery({
 
                 const evt = event;
                 pointerTypeRef.current = evt.pointerType || "mouse";
-                if (pointerTypeRef.current === "touch") evt.preventDefault();
-                if (pointerTypeRef.current === "touch") lockScroll();
                 draggingRef.current = true;
+                dragAxisRef.current = null;
                 cancelTapRef.current = false;
                 movedRef.current = false;
                 startRotRef.current = { ...rotationRef.current };
@@ -411,6 +411,21 @@ export default function DomeGallery({
 
                 const dxTotal = evt.clientX - startPosRef.current.x;
                 const dyTotal = evt.clientY - startPosRef.current.y;
+
+                if (!dragAxisRef.current) {
+                    const distance = Math.hypot(dxTotal, dyTotal);
+                    if (distance < 8) return;
+                    dragAxisRef.current = Math.abs(dxTotal) > Math.abs(dyTotal) * 1.25 ? "horizontal" : "vertical";
+                }
+
+                if (pointerTypeRef.current === "touch" && dragAxisRef.current === "vertical") {
+                    return;
+                }
+
+                if (pointerTypeRef.current === "touch") {
+                    evt.preventDefault();
+                    lockScroll();
+                }
 
                 if (!movedRef.current) {
                     const dist2 = dxTotal * dxTotal + dyTotal * dyTotal;
@@ -464,6 +479,7 @@ export default function DomeGallery({
                         startInertia(vx, vy);
                     }
                     startPosRef.current = null;
+                    dragAxisRef.current = null;
                     cancelTapRef.current = !isTap;
 
                     if (isTap && tapTargetRef.current && !focusedElRef.current) {
@@ -852,7 +868,7 @@ export default function DomeGallery({
                     ref={mainRef}
                     className="absolute inset-0 grid place-items-center overflow-hidden select-none bg-transparent"
                     style={{
-                        touchAction: "none",
+                        touchAction: "pan-y",
                         WebkitUserSelect: "none",
                         maskImage: "radial-gradient(ellipse at center, black 30%, transparent 65%)",
                         WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 65%)",
