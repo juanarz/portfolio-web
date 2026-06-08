@@ -8,22 +8,22 @@ import TypewriterCarousel from '../ui/TypewriterCarousel'
 import { stickers as stickerImages } from '../../assets/stickers'
 
 const profileStickers = [
-  { id: 1, image: stickerImages[0], initialX: -72, initialY: -64, finalX: -172, finalY: -132, mobileInitialX: -48, mobileInitialY: -42, mobileFinalX: -104, mobileFinalY: -88 },
-  { id: 2, image: stickerImages[1], initialX: -78, initialY: -28, finalX: -196, finalY: -86, mobileInitialX: -52, mobileInitialY: -20, mobileFinalX: -118, mobileFinalY: -58 },
-  { id: 3, image: stickerImages[2], initialX: -80, initialY: 8, finalX: -184, finalY: -38, mobileInitialX: -54, mobileInitialY: 4, mobileFinalX: -112, mobileFinalY: -28 },
-  { id: 4, image: stickerImages[3], initialX: -80, initialY: 44, finalX: -196, finalY: 10, mobileInitialX: -54, mobileInitialY: 30, mobileFinalX: -118, mobileFinalY: 4 },
-  { id: 5, image: stickerImages[4], initialX: -76, initialY: 80, finalX: -178, finalY: 58, mobileInitialX: -50, mobileInitialY: 52, mobileFinalX: -108, mobileFinalY: 36 },
-  { id: 6, image: stickerImages[5], initialX: -68, initialY: 116, finalX: -150, finalY: 106, mobileInitialX: -46, mobileInitialY: 74, mobileFinalX: -96, mobileFinalY: 68 },
-  { id: 7, image: stickerImages[6], initialX: -38, initialY: 118, finalX: -118, finalY: 118, mobileInitialX: -28, mobileInitialY: 78, mobileFinalX: -80, mobileFinalY: 78 },
-  { id: 8, image: stickerImages[7], initialX: -4, initialY: 124, finalX: -58, finalY: 128, mobileInitialX: -4, mobileInitialY: 82, mobileFinalX: -44, mobileFinalY: 84 },
-  { id: 9, image: stickerImages[8], initialX: 72, initialY: -64, finalX: 172, finalY: -132, mobileInitialX: 48, mobileInitialY: -42, mobileFinalX: 104, mobileFinalY: -88 },
-  { id: 10, image: stickerImages[9], initialX: 78, initialY: -28, finalX: 196, finalY: -86, mobileInitialX: 52, mobileInitialY: -20, mobileFinalX: 118, mobileFinalY: -58 },
-  { id: 11, image: stickerImages[10], initialX: 80, initialY: 8, finalX: 184, finalY: -38, mobileInitialX: 54, mobileInitialY: 4, mobileFinalX: 112, mobileFinalY: -28 },
-  { id: 12, image: stickerImages[11], initialX: 80, initialY: 44, finalX: 196, finalY: 10, mobileInitialX: 54, mobileInitialY: 30, mobileFinalX: 118, mobileFinalY: 4 },
-  { id: 13, image: stickerImages[12], initialX: 76, initialY: 80, finalX: 178, finalY: 58, mobileInitialX: 50, mobileInitialY: 52, mobileFinalX: 108, mobileFinalY: 36 },
-  { id: 14, image: stickerImages[13], initialX: 68, initialY: 116, finalX: 150, finalY: 106, mobileInitialX: 46, mobileInitialY: 74, mobileFinalX: 96, mobileFinalY: 68 },
-  { id: 15, image: stickerImages[14], initialX: 38, initialY: 118, finalX: 118, finalY: 118, mobileInitialX: 28, mobileInitialY: 78, mobileFinalX: 80, mobileFinalY: 78 },
-  { id: 16, image: stickerImages[15], initialX: 4, initialY: 124, finalX: 58, finalY: 128, mobileInitialX: 4, mobileInitialY: 82, mobileFinalX: 44, mobileFinalY: 84 },
+  { id: 1, image: stickerImages[0], initialLeft: 48, initialTop: 26, finalLeft: 5, finalTop: 18, mobileInitialLeft: 38, mobileInitialTop: 24, mobileFinalLeft: 4, mobileFinalTop: 18 },
+  { id: 2, image: stickerImages[1], initialLeft: 50, initialTop: 24, finalLeft: 16, finalTop: 13, mobileInitialLeft: 40, mobileInitialTop: 24, mobileFinalLeft: 20, mobileFinalTop: 14 },
+  { id: 3, image: stickerImages[2], initialLeft: 48, initialTop: 30, finalLeft: 28, finalTop: 17, mobileInitialLeft: 40, mobileInitialTop: 28, mobileFinalLeft: 36, mobileFinalTop: 16 },
+  { id: 4, image: stickerImages[3], initialLeft: 50, initialTop: 30, finalLeft: 72, finalTop: 16, mobileInitialLeft: 42, mobileInitialTop: 28, mobileFinalLeft: 64, mobileFinalTop: 16 },
+  { id: 5, image: stickerImages[4], initialLeft: 48, initialTop: 34, finalLeft: 84, finalTop: 13, mobileInitialLeft: 42, mobileInitialTop: 32, mobileFinalLeft: 80, mobileFinalTop: 14 },
+  { id: 6, image: stickerImages[5], initialLeft: 50, initialTop: 36, finalLeft: 94, finalTop: 20, mobileInitialLeft: 44, mobileInitialTop: 34, mobileFinalLeft: 92, mobileFinalTop: 20 },
+  { id: 7, image: stickerImages[6], initialLeft: 46, initialTop: 44, finalLeft: 7, finalTop: 42, mobileInitialLeft: 38, mobileInitialTop: 42, mobileFinalLeft: 6, mobileFinalTop: 40 },
+  { id: 8, image: stickerImages[7], initialLeft: 48, initialTop: 46, finalLeft: 19, finalTop: 50, mobileInitialLeft: 40, mobileInitialTop: 44, mobileFinalLeft: 22, mobileFinalTop: 50 },
+  { id: 9, image: stickerImages[8], initialLeft: 50, initialTop: 44, finalLeft: 31, finalTop: 43, mobileInitialLeft: 42, mobileInitialTop: 42, mobileFinalLeft: 38, mobileFinalTop: 42 },
+  { id: 10, image: stickerImages[9], initialLeft: 52, initialTop: 44, finalLeft: 69, finalTop: 43, mobileInitialLeft: 44, mobileInitialTop: 42, mobileFinalLeft: 62, mobileFinalTop: 42 },
+  { id: 11, image: stickerImages[10], initialLeft: 52, initialTop: 46, finalLeft: 81, finalTop: 50, mobileInitialLeft: 44, mobileInitialTop: 44, mobileFinalLeft: 78, mobileFinalTop: 50 },
+  { id: 12, image: stickerImages[11], initialLeft: 54, initialTop: 44, finalLeft: 93, finalTop: 42, mobileInitialLeft: 46, mobileInitialTop: 42, mobileFinalLeft: 94, mobileFinalTop: 40 },
+  { id: 13, image: stickerImages[12], initialLeft: 47, initialTop: 62, finalLeft: 6, finalTop: 70, mobileInitialLeft: 38, mobileInitialTop: 58, mobileFinalLeft: 5, mobileFinalTop: 66 },
+  { id: 14, image: stickerImages[13], initialLeft: 49, initialTop: 62, finalLeft: 24, finalTop: 78, mobileInitialLeft: 40, mobileInitialTop: 58, mobileFinalLeft: 28, mobileFinalTop: 78 },
+  { id: 15, image: stickerImages[14], initialLeft: 51, initialTop: 62, finalLeft: 76, finalTop: 78, mobileInitialLeft: 44, mobileInitialTop: 58, mobileFinalLeft: 72, mobileFinalTop: 78 },
+  { id: 16, image: stickerImages[15], initialLeft: 53, initialTop: 62, finalLeft: 94, finalTop: 70, mobileInitialLeft: 46, mobileInitialTop: 58, mobileFinalLeft: 95, mobileFinalTop: 66 },
 ]
 
 const Hero = () => {
@@ -77,58 +77,57 @@ const Hero = () => {
     const progress = scrollProgress
     const isMobile = window.innerWidth < 768
     const isVerySmall = window.innerWidth < 375
-    const initialX = isMobile ? sticker.mobileInitialX : sticker.initialX
-    const initialY = isMobile ? sticker.mobileInitialY : sticker.initialY
-    const finalX = isMobile ? sticker.mobileFinalX : sticker.finalX
-    const finalY = isMobile ? sticker.mobileFinalY : sticker.finalY
-    const constrainedFinalX = isVerySmall
-      ? Math.max(-90, Math.min(90, finalX * 0.85))
-      : isMobile
-        ? Math.max(-110, Math.min(110, finalX))
-        : finalX
-    const constrainedFinalY = isVerySmall ? finalY * 0.8 : finalY
-    const x = initialX + (constrainedFinalX - initialX) * progress
-    const y = initialY + (constrainedFinalY - initialY) * progress
-    const scale = isVerySmall ? 0.4 + 0.15 * progress : isMobile ? 0.55 + 0.2 * progress : 0.7 + 0.35 * progress
-    const opacity = 0.9 + 0.1 * progress
+    const initialLeft = isMobile ? sticker.mobileInitialLeft : sticker.initialLeft
+    const initialTop = isMobile ? sticker.mobileInitialTop : sticker.initialTop
+    const finalLeft = isMobile ? sticker.mobileFinalLeft : sticker.finalLeft
+    const finalTop = isMobile ? sticker.mobileFinalTop : sticker.finalTop
+    const left = initialLeft + (finalLeft - initialLeft) * progress
+    const top = initialTop + (finalTop - initialTop) * progress
+    const scale = isVerySmall ? 0.38 + 0.12 * progress : isMobile ? 0.48 + 0.18 * progress : 0.62 + 0.28 * progress
+    const opacity = 0.36 + 0.22 * progress
     const rotation = progress * 20
 
     return {
-      transform: `translate(${x}px, ${y}px) scale(${scale}) rotate(${rotation}deg)`,
+      left: `${left}%`,
+      top: `${top}%`,
+      transform: `translate(-50%, -50%) scale(${scale}) rotate(${rotation}deg)`,
       opacity,
       transition: 'transform 0.1s ease-out, opacity 0.1s ease-out',
       willChange: 'transform, opacity',
-      width: isVerySmall ? '38px' : isMobile ? '46px' : '58px',
-      height: isVerySmall ? '38px' : isMobile ? '46px' : '58px',
+      width: isVerySmall ? '42px' : isMobile ? '52px' : '86px',
+      height: isVerySmall ? '42px' : isMobile ? '52px' : '86px',
       filter: 'drop-shadow(0 4px 8px rgba(255, 194, 209, 0.3))',
     }
   }
 
   return (
     <section ref={sectionRef} id="home" className="min-h-screen flex items-center justify-center px-4 pt-16 overflow-hidden">
-      <div className="max-w-4xl mx-auto text-center animate-fade-in">
+      {isIntroComplete && (
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {profileStickers.map((sticker) => {
+            const isVerySmall = window.innerWidth < 375
+            const isMobile = window.innerWidth < 768
+
+            return (
+              <img
+                key={sticker.id}
+                src={sticker.image}
+                alt=""
+                className="absolute select-none animate-fade-in"
+                style={getStickerStyle(sticker)}
+                loading={sticker.id <= 4 ? 'eager' : 'lazy'}
+                decoding="async"
+                width={isVerySmall ? '42' : isMobile ? '52' : '86'}
+                height={isVerySmall ? '42' : isMobile ? '52' : '86'}
+              />
+            )
+          })}
+        </div>
+      )}
+
+      <div className="relative z-10 max-w-4xl mx-auto text-center animate-fade-in">
         {/* Profile Picture */}
         <div className="relative z-0 mb-8 flex items-center justify-center animate-slide-up">
-          <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-            {isIntroComplete && profileStickers.map((sticker) => {
-              const isVerySmall = window.innerWidth < 375
-              const isMobile = window.innerWidth < 768
-
-              return (
-                <img
-                  key={sticker.id}
-                  src={sticker.image}
-                  alt=""
-                  className="absolute select-none animate-fade-in"
-                  style={getStickerStyle(sticker)}
-                  loading={sticker.id <= 4 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  width={isVerySmall ? '38' : isMobile ? '46' : '58'}
-                  height={isVerySmall ? '38' : isMobile ? '46' : '58'}
-                />
-              )
-            })}
-          </div>
           <img
             src={content.profileImage}
             alt={content.name}
