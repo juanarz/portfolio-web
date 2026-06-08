@@ -2,8 +2,38 @@ import { useState } from 'react'
 import emailjs from '@emailjs/browser'
 import { useLanguage } from '../../context/LanguageContext'
 
-// Initialize EmailJS
-emailjs.init('t-MDcVn0eQlwZNQGY') // Your public key
+const emailServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
+const emailTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+const emailPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'juanpablo00444@gmail.com'
+
+const isEmailConfigured = Boolean(emailServiceId && emailTemplateId && emailPublicKey)
+
+const getEmailErrorMessage = (error, language) => {
+  const errorText = error?.text || error?.message || ''
+
+  if (!isEmailConfigured) {
+    return language === 'en'
+      ? 'Contact form is not configured yet. Please email me directly.'
+      : 'El formulario de contacto aún no está configurado. Escríbeme directamente por correo.'
+  }
+
+  if (errorText.toLowerCase().includes('invalid grant')) {
+    return language === 'en'
+      ? 'The contact form email connection needs to be reconnected. Please email me directly for now.'
+      : 'La conexión de correo del formulario debe reconectarse. Por ahora, escríbeme directamente por correo.'
+  }
+
+  if (errorText.toLowerCase().includes('account not found')) {
+    return language === 'en'
+      ? 'The contact form public key does not match the EmailJS account. Please email me directly for now.'
+      : 'La clave pública del formulario no coincide con la cuenta de EmailJS. Por ahora, escríbeme directamente por correo.'
+  }
+
+  return language === 'en'
+    ? 'Failed to send message. Please try again later.'
+    : 'No se pudo enviar el mensaje. Intenta nuevamente más tarde.'
+}
 
 const ContactForm = () => {
   const { language } = useLanguage()
@@ -29,13 +59,17 @@ const ContactForm = () => {
     setSubmitStatus({ success: null, message: '' })
 
     try {
-      await emailjs.send('service_ohob4ob', 'template_491jd0k', {
+      if (!isEmailConfigured) {
+        throw new Error('EmailJS configuration is missing')
+      }
+
+      await emailjs.send(emailServiceId, emailTemplateId, {
         from_name: formData.name,
         from_email: formData.email,
         message: formData.message,
-        to_email: 'your-email@example.com', // Add your email here
+        to_email: contactEmail,
         subject: `New message from ${formData.name} - Portfolio Contact Form`,
-      })
+      }, emailPublicKey)
 
       setSubmitStatus({
         success: true,
@@ -49,10 +83,7 @@ const ContactForm = () => {
       console.error('Failed to send message:', error)
       setSubmitStatus({
         success: false,
-        message:
-          language === 'en'
-            ? `Failed to send message. ${error.text || 'Please try again later.'}`
-            : `No se pudo enviar el mensaje. ${error.text || 'Intenta nuevamente más tarde.'}`,
+        message: getEmailErrorMessage(error, language),
       })
     } finally {
       setIsSubmitting(false)
