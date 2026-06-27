@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
+import { FaBullseye, FaCameraRetro, FaEye, FaUsers } from 'react-icons/fa'
 import { socialMock } from '../../data/socialMock'
 import { useLanguage } from '../../context/LanguageContext'
 
@@ -14,13 +15,23 @@ const labels = {
     profileViews: 'Profile views',
     reach: 'Reach',
     chartTitle: 'Daily reach',
-    chartSubtitle: 'Latest values available from Meta Graph API',
+    chartSubtitle: 'Day-by-day comparison from Meta Graph API',
+    peak: 'Peak',
+    latest: 'Latest',
+    change: 'Change',
     live: 'Live',
     syncing: 'Syncing',
     unavailable: 'Cached',
     profileAlt: 'Instagram profile',
     openProfile: 'Open Instagram profile',
     bio: 'Instagram professional account connected through Meta Graph API.',
+    moreDataTitle: 'More Meta data we can add',
+    moreData: [
+      ['Top posts and reels', 'Recent media, thumbnails, links, captions, likes, comments and per-media insights.'],
+      ['Profile actions', 'Website clicks and other profile/contact taps when those signals are available.'],
+      ['Engagement', 'Accounts engaged, total interactions, likes, comments, shares and saves by period.'],
+      ['Audience activity', 'Follower activity and audience breakdowns when Meta returns enough audience data.'],
+    ],
   },
   es: {
     title: 'Redes',
@@ -32,13 +43,23 @@ const labels = {
     profileViews: 'Visitas al perfil',
     reach: 'Alcance',
     chartTitle: 'Alcance diario',
-    chartSubtitle: 'Últimos valores disponibles desde Meta Graph API',
+    chartSubtitle: 'Comparación día a día desde Meta Graph API',
+    peak: 'Pico',
+    latest: 'Último',
+    change: 'Cambio',
     live: 'En vivo',
     syncing: 'Sincronizando',
     unavailable: 'Cache',
     profileAlt: 'Perfil de Instagram',
     openProfile: 'Abrir perfil de Instagram',
     bio: 'Cuenta profesional de Instagram conectada mediante Meta Graph API.',
+    moreDataTitle: 'Más datos de Meta que podemos agregar',
+    moreData: [
+      ['Posts y reels destacados', 'Media reciente, miniaturas, enlaces, captions, likes, comentarios e insights por publicación.'],
+      ['Actividad del perfil', 'Clics al sitio web y otros toques de perfil/contacto cuando esas señales estén disponibles.'],
+      ['Interacciones', 'Cuentas que interactuaron, interacciones totales, likes, comentarios, compartidos y guardados por periodo.'],
+      ['Actividad de audiencia', 'Actividad de seguidores y demografía cuando Meta devuelva suficientes datos de audiencia.'],
+    ],
   },
 }
 
@@ -78,105 +99,97 @@ const getFallbackInstagram = (data) => ({
 })
 
 const buildInstagramData = (baseData, instagramStats) => {
-  if (instagramStats?.profile && instagramStats?.insights) {
-    return instagramStats
-  }
-
+  if (instagramStats?.profile && instagramStats?.insights) return instagramStats
   return getFallbackInstagram(baseData)
 }
 
-const ReachChart = ({ points }) => {
-  if (!points?.length) return null
-
-  const width = 720
-  const height = 240
-  const padding = 28
-  const values = points.map((point) => point.value)
-  const max = Math.max(...values)
-  const min = Math.min(...values)
-  const range = max - min || 1
-
-  const coordinates = points.map((point, index) => {
-    const x = points.length === 1
-      ? width - padding
-      : padding + (index / (points.length - 1)) * (width - padding * 2)
-    const y = height - padding - ((point.value - min) / range) * (height - padding * 2)
-
-    return { ...point, x, y }
-  })
-
-  const linePath = coordinates
-    .map(({ x, y }, index) => `${index === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`)
-    .join(' ')
-
-  const areaPath = `${linePath} L ${coordinates.at(-1).x.toFixed(2)} ${height - padding} L ${coordinates[0].x.toFixed(2)} ${height - padding} Z`
-
-  return (
-    <div className="overflow-hidden rounded-lg border border-slate-200/70 bg-white/40 p-3 dark:border-white/10 dark:bg-white/[0.03]">
-      <svg viewBox={`0 0 ${width} ${height}`} className="h-56 w-full" role="img" aria-label="Instagram reach chart">
-        <defs>
-          <linearGradient id="reach-line" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#60A5FA" />
-            <stop offset="100%" stopColor="#A855F7" />
-          </linearGradient>
-          <linearGradient id="reach-area" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#60A5FA" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="#A855F7" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-
-        {[0, 1, 2].map((line) => {
-          const y = padding + line * ((height - padding * 2) / 2)
-          return (
-            <line
-              key={line}
-              x1={padding}
-              x2={width - padding}
-              y1={y}
-              y2={y}
-              stroke="currentColor"
-              className="text-slate-300 dark:text-white/10"
-              strokeWidth="1"
-            />
-          )
-        })}
-
-        <path d={areaPath} fill="url(#reach-area)" />
-        <path d={linePath} fill="none" stroke="url(#reach-line)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-
-        {coordinates.map((point) => (
-          <g key={`${point.endTime}-${point.value}`}>
-            <circle cx={point.x} cy={point.y} r="6" fill="#0F172A" className="dark:fill-slate-950" />
-            <circle cx={point.x} cy={point.y} r="4" fill="#60A5FA" />
-          </g>
-        ))}
-      </svg>
-
-      <div className="grid grid-cols-2 gap-3 px-1 pb-1 text-xs text-slate-500 dark:text-slate-400 sm:grid-cols-4">
-        {points.map((point) => (
-          <div key={`${point.endTime}-${point.value}`} className="flex items-center justify-between gap-2 rounded-md bg-slate-100/70 px-2 py-1 dark:bg-white/5">
-            <span>{formatChartDate(point.endTime)}</span>
-            <span className="font-semibold text-slate-700 dark:text-white">{formatCompactNumber(point.value)}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-const MetricCard = ({ label, value, accent = 'blue' }) => {
-  const accentClass = accent === 'purple' ? 'from-purple-500/20 to-fuchsia-500/10 text-purple-300' : 'from-blue-500/20 to-cyan-500/10 text-blue-300'
+const MetricCard = ({ icon: Icon, label, value, accent = 'blue', description }) => {
+  const accentStyles = {
+    blue: 'from-blue-500/20 to-cyan-500/10 text-blue-500 dark:text-blue-300',
+    purple: 'from-purple-500/20 to-fuchsia-500/10 text-purple-500 dark:text-purple-300',
+    emerald: 'from-emerald-500/20 to-teal-500/10 text-emerald-500 dark:text-emerald-300',
+    rose: 'from-rose-500/20 to-pink-500/10 text-rose-500 dark:text-rose-300',
+  }
 
   return (
     <div className="glass-effect rounded-lg p-5">
-      <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${accentClass}`}>
-        <span className="h-2 w-2 rounded-full bg-current" />
+      <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br ${accentStyles[accent]}`}>
+        <Icon className="h-5 w-5" aria-hidden="true" />
       </div>
       <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{value}</p>
+      {description && <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{description}</p>}
     </div>
   )
 }
+
+const ReachChart = ({ points, content }) => {
+  if (!points?.length) return null
+
+  const recentPoints = points.slice(-7)
+  const values = recentPoints.map((point) => point.value)
+  const max = Math.max(...values, 1)
+  const latest = recentPoints.at(-1)?.value || 0
+  const previous = recentPoints.at(-2)?.value || 0
+  const change = previous ? ((latest - previous) / previous) * 100 : 0
+
+  return (
+    <div className="rounded-lg border border-slate-200/70 bg-white/40 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+      <div className="mb-5 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-lg bg-slate-100/70 p-3 dark:bg-white/5">
+          <p className="text-xs text-slate-500 dark:text-slate-400">{content.peak}</p>
+          <p className="mt-1 text-lg font-bold text-slate-900 dark:text-white">{formatCompactNumber(max)}</p>
+        </div>
+        <div className="rounded-lg bg-slate-100/70 p-3 dark:bg-white/5">
+          <p className="text-xs text-slate-500 dark:text-slate-400">{content.latest}</p>
+          <p className="mt-1 text-lg font-bold text-slate-900 dark:text-white">{formatCompactNumber(latest)}</p>
+        </div>
+        <div className="rounded-lg bg-slate-100/70 p-3 dark:bg-white/5">
+          <p className="text-xs text-slate-500 dark:text-slate-400">{content.change}</p>
+          <p className={`mt-1 text-lg font-bold ${change >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+            {change >= 0 ? '+' : ''}{change.toFixed(1)}%
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {recentPoints.map((point, index) => {
+          const width = Math.max((point.value / max) * 100, 3)
+          const isLatest = index === recentPoints.length - 1
+
+          return (
+            <div key={`${point.endTime}-${point.value}`} className="grid grid-cols-[4.25rem_1fr_4rem] items-center gap-3">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{formatChartDate(point.endTime)}</span>
+              <div className="h-4 overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/10">
+                <div
+                  className={`h-full rounded-full bg-gradient-to-r ${
+                    isLatest ? 'from-blue-500 to-purple-500' : 'from-blue-400/70 to-blue-500/70'
+                  }`}
+                  style={{ width: `${width}%` }}
+                />
+              </div>
+              <span className="text-right text-sm font-bold text-slate-900 dark:text-white">{formatCompactNumber(point.value)}</span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+const MoreDataPanel = ({ content }) => (
+  <div className="glass-effect rounded-lg p-5 sm:p-6">
+    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{content.moreDataTitle}</h3>
+    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      {content.moreData.map(([label, description]) => (
+        <div key={label} className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+          <p className="text-sm font-semibold text-slate-800 dark:text-white">{label}</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)
 
 const SocialStats = ({ data = socialMock }) => {
   const { language } = useLanguage()
@@ -191,9 +204,7 @@ const SocialStats = ({ data = socialMock }) => {
       try {
         const response = await fetch('/api/instagram-stats')
 
-        if (!response.ok) {
-          throw new Error('Instagram stats endpoint is not available')
-        }
+        if (!response.ok) throw new Error('Instagram stats endpoint is not available')
 
         const payload = await response.json()
 
@@ -206,9 +217,7 @@ const SocialStats = ({ data = socialMock }) => {
           setStatus('live')
         }
       } catch {
-        if (isMounted) {
-          setStatus('unavailable')
-        }
+        if (isMounted) setStatus('unavailable')
       }
     }
 
@@ -287,10 +296,10 @@ const SocialStats = ({ data = socialMock }) => {
 
           <div className="space-y-6">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              <MetricCard label={content.followers} value={formatNumber(profile.followers)} />
-              <MetricCard label={content.posts} value={formatNumber(profile.mediaCount)} accent="purple" />
-              <MetricCard label={content.profileViews} value={formatNumber(insights.profileViews)} />
-              <MetricCard label={content.reach} value={formatNumber(insights.latestReach)} accent="purple" />
+              <MetricCard icon={FaUsers} label={content.followers} value={formatNumber(profile.followers)} description={`@${profile.username}`} />
+              <MetricCard icon={FaCameraRetro} label={content.posts} value={formatNumber(profile.mediaCount)} accent="purple" />
+              <MetricCard icon={FaEye} label={content.profileViews} value={formatNumber(insights.profileViews)} accent="emerald" />
+              <MetricCard icon={FaBullseye} label={content.reach} value={formatNumber(insights.latestReach)} accent="rose" />
             </div>
 
             <div className="glass-effect rounded-lg p-5 sm:p-6">
@@ -302,13 +311,25 @@ const SocialStats = ({ data = socialMock }) => {
                 <p className="text-3xl font-bold text-gradient">{formatCompactNumber(insights.latestReach)}</p>
               </div>
 
-              <ReachChart points={insights.reach} />
+              <ReachChart points={insights.reach} content={content} />
             </div>
           </div>
+        </div>
+
+        <div className="mt-6">
+          <MoreDataPanel content={content} />
         </div>
       </div>
     </section>
   )
+}
+
+MetricCard.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  accent: PropTypes.oneOf(['blue', 'purple', 'emerald', 'rose']),
+  description: PropTypes.string,
 }
 
 ReachChart.propTypes = {
@@ -318,12 +339,11 @@ ReachChart.propTypes = {
       endTime: PropTypes.string,
     })
   ),
+  content: PropTypes.object.isRequired,
 }
 
-MetricCard.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  accent: PropTypes.oneOf(['blue', 'purple']),
+MoreDataPanel.propTypes = {
+  content: PropTypes.object.isRequired,
 }
 
 SocialStats.propTypes = {
