@@ -41,6 +41,14 @@ const getInsightValue = (insight) => {
   return null
 }
 
+const getInsightValues = (insight) => {
+  if (!insight?.values) return []
+  return insight.values.map((item) => ({
+    value: item.value,
+    endTime: item.end_time,
+  }))
+}
+
 const getMediaInsight = async (mediaId, metric, accessToken) => {
   try {
     const response = await graphRequest(`/${mediaId}/insights?metric=${metric}`, accessToken)
@@ -81,6 +89,96 @@ const getMediaInsights = async (media, accessToken) => {
   return mediaWithInsights
 }
 
+const getAccountInsight = async (accountId, metric, accessToken, options = {}) => {
+  const params = new URLSearchParams({
+    metric,
+    period: options.period || 'day',
+  })
+
+  if (options.metricType) params.set('metric_type', options.metricType)
+  if (options.breakdown) params.set('breakdown', options.breakdown)
+
+  try {
+    const response = await graphRequest(`/${accountId}/insights?${params.toString()}`, accessToken)
+    const insight = response.data?.[0]
+
+    return {
+      metric,
+      value: getInsightValue(insight),
+      values: getInsightValues(insight),
+      totalValue: insight?.total_value || null,
+    }
+  } catch {
+    return {
+      metric,
+      value: null,
+      values: [],
+      totalValue: null,
+    }
+  }
+}
+
+const getAccountInsights = async (accountId, accessToken, profileViews, reach) => {
+  const [
+    websiteClicks,
+    profileLinksTaps,
+    accountsEngaged,
+    totalInteractions,
+    likes,
+    comments,
+    shares,
+    saves,
+    onlineFollowers,
+    followerDemographics,
+  ] = await Promise.all([
+    getAccountInsight(accountId, 'website_clicks', accessToken),
+    getAccountInsight(accountId, 'profile_links_taps', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'accounts_engaged', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'total_interactions', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'likes', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'comments', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'shares', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'saves', accessToken, { metricType: 'total_value' }),
+    getAccountInsight(accountId, 'online_followers', accessToken, { period: 'lifetime' }),
+    getAccountInsight(accountId, 'follower_demographics', accessToken, {
+      period: 'lifetime',
+      metricType: 'total_value',
+      breakdown: 'age,gender',
+    }),
+  ])
+
+  return {
+    profileActions: {
+      profileViews,
+      websiteClicks: websiteClicks.value,
+      profileLinksTaps: profileLinksTaps.value,
+    },
+    engagement: {
+      accountsEngaged: accountsEngaged.value,
+      totalInteractions: totalInteractions.value,
+      likes: likes.value,
+      comments: comments.value,
+      shares: shares.value,
+      saves: saves.value,
+    },
+    audienceActivity: {
+      onlineFollowers: onlineFollowers.values,
+      followerDemographics: followerDemographics.totalValue?.breakdowns || [],
+    },
+    reach,
+  }
+}
+
+const getMediaScore = (media) => {
+  const insights = media.insights || {}
+  return insights.views || insights.plays || insights.reach || media.likeCount || 0
+}
+
+const getTopMedia = (media) =>
+  [...media]
+    .sort((a, b) => getMediaScore(b) - getMediaScore(a))
+    .slice(0, 6)
+
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
     response.setHeader('Allow', 'GET')
@@ -112,6 +210,7 @@ export default async function handler(request, response) {
     const reach = getReachValues(reachResponse)
     const latestReach = reach.at(-1)?.value || 0
     const media = await getMediaInsights(mediaResponse.data || [], accessToken)
+    const accountInsights = await getAccountInsights(accountId, accessToken, profileViews, reach)
 
     return json(response, 200, {
       configured: true,
@@ -129,6 +228,8 @@ export default async function handler(request, response) {
         reach,
       },
       media,
+      topMedia: getTopMedia(media),
+      accountInsights,
       summary: {
         instagram: {
           handle: `@${profile.username}`,

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { FaBullseye, FaCameraRetro, FaComment, FaEye, FaHeart, FaPlay, FaRegBookmark, FaShareAlt, FaUsers } from 'react-icons/fa'
+import { FaBolt, FaBullseye, FaCameraRetro, FaClock, FaComment, FaExternalLinkAlt, FaEye, FaHeart, FaMousePointer, FaPlay, FaRegBookmark, FaShareAlt, FaUsers } from 'react-icons/fa'
 import { socialMock } from '../../data/socialMock'
 import { useLanguage } from '../../context/LanguageContext'
 
@@ -34,13 +34,17 @@ const labels = {
     shares: 'Shares',
     plays: 'Plays',
     views: 'Views',
-    moreDataTitle: 'More Meta data we can add',
-    moreData: [
-      ['Top posts and reels', 'Recent media, thumbnails, links, captions, likes, comments and per-media insights.'],
-      ['Profile actions', 'Website clicks and other profile/contact taps when those signals are available.'],
-      ['Engagement', 'Accounts engaged, total interactions, likes, comments, shares and saves by period.'],
-      ['Audience activity', 'Follower activity and audience breakdowns when Meta returns enough audience data.'],
-    ],
+    topContent: 'Top posts and reels',
+    profileActions: 'Profile actions',
+    engagement: 'Engagement',
+    audienceActivity: 'Audience activity',
+    websiteClicks: 'Website clicks',
+    profileLinksTaps: 'Profile link taps',
+    accountsEngaged: 'Accounts engaged',
+    totalInteractions: 'Total interactions',
+    onlineFollowers: 'Online followers',
+    audienceUnavailable: 'Audience activity is available when Meta returns enough follower data.',
+    noLiveInsights: 'Connect a valid Meta token to unlock this panel.',
   },
   es: {
     title: 'Redes',
@@ -71,13 +75,17 @@ const labels = {
     shares: 'Compartidos',
     plays: 'Reproducciones',
     views: 'Vistas',
-    moreDataTitle: 'Más datos de Meta que podemos agregar',
-    moreData: [
-      ['Posts y reels destacados', 'Media reciente, miniaturas, enlaces, captions, likes, comentarios e insights por publicación.'],
-      ['Actividad del perfil', 'Clics al sitio web y otros toques de perfil/contacto cuando esas señales estén disponibles.'],
-      ['Interacciones', 'Cuentas que interactuaron, interacciones totales, likes, comentarios, compartidos y guardados por periodo.'],
-      ['Actividad de audiencia', 'Actividad de seguidores y demografía cuando Meta devuelva suficientes datos de audiencia.'],
-    ],
+    topContent: 'Posts y reels destacados',
+    profileActions: 'Acciones del perfil',
+    engagement: 'Interacciones',
+    audienceActivity: 'Actividad de audiencia',
+    websiteClicks: 'Clics al sitio web',
+    profileLinksTaps: 'Toques al enlace del perfil',
+    accountsEngaged: 'Cuentas que interactuaron',
+    totalInteractions: 'Interacciones totales',
+    onlineFollowers: 'Seguidores conectados',
+    audienceUnavailable: 'La actividad de audiencia aparece cuando Meta devuelve suficientes datos de seguidores.',
+    noLiveInsights: 'Conecta un token válido de Meta para activar este panel.',
   },
 }
 
@@ -114,6 +122,25 @@ const getFallbackInstagram = (data) => ({
       endTime: new Date(Date.now() - (data.trends.instagram.length - index - 1) * 86400000).toISOString(),
     })),
   },
+  accountInsights: {
+    profileActions: {
+      profileViews: data.summary.instagram.profileViews || 247,
+      websiteClicks: null,
+      profileLinksTaps: null,
+    },
+    engagement: {
+      accountsEngaged: null,
+      totalInteractions: null,
+      likes: null,
+      comments: null,
+      shares: null,
+      saves: null,
+    },
+    audienceActivity: {
+      onlineFollowers: [],
+      followerDemographics: [],
+    },
+  },
 })
 
 const buildInstagramData = (baseData, instagramStats) => {
@@ -121,6 +148,7 @@ const buildInstagramData = (baseData, instagramStats) => {
   return {
     ...getFallbackInstagram(baseData),
     media: [],
+    topMedia: [],
   }
 }
 
@@ -289,6 +317,132 @@ const MediaGrid = ({ media = [], content }) => (
   </div>
 )
 
+const DataPoint = ({ icon: Icon, label, value }) => {
+  const hasValue = typeof value === 'number'
+
+  return (
+    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+      <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500 dark:text-blue-300">
+        <Icon className="h-4 w-4" aria-hidden="true" />
+      </div>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{hasValue ? formatNumber(value) : '--'}</p>
+    </div>
+  )
+}
+
+const DataPanel = ({ title, children }) => (
+  <div className="glass-effect rounded-lg p-5 sm:p-6">
+    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
+    <div className="mt-4">{children}</div>
+  </div>
+)
+
+const ProfileActionsPanel = ({ actions = {}, content }) => (
+  <DataPanel title={content.profileActions}>
+    <div className="grid gap-3 sm:grid-cols-3">
+      <DataPoint icon={FaEye} label={content.profileViews} value={actions.profileViews} />
+      <DataPoint icon={FaExternalLinkAlt} label={content.websiteClicks} value={actions.websiteClicks} />
+      <DataPoint icon={FaMousePointer} label={content.profileLinksTaps} value={actions.profileLinksTaps} />
+    </div>
+  </DataPanel>
+)
+
+const EngagementPanel = ({ engagement = {}, content }) => (
+  <DataPanel title={content.engagement}>
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <DataPoint icon={FaUsers} label={content.accountsEngaged} value={engagement.accountsEngaged} />
+      <DataPoint icon={FaBolt} label={content.totalInteractions} value={engagement.totalInteractions} />
+      <DataPoint icon={FaHeart} label={content.likes} value={engagement.likes} />
+      <DataPoint icon={FaComment} label={content.comments} value={engagement.comments} />
+      <DataPoint icon={FaShareAlt} label={content.shares} value={engagement.shares} />
+      <DataPoint icon={FaRegBookmark} label={content.saved} value={engagement.saves} />
+    </div>
+  </DataPanel>
+)
+
+const AudienceActivityPanel = ({ audience = {}, content }) => {
+  const onlineFollowers = audience.onlineFollowers || []
+  const hourlyEntries = onlineFollowers
+    .flatMap((item) => {
+      if (!item.value || typeof item.value !== 'object') return []
+      return Object.entries(item.value).map(([hour, value]) => ({ hour, value }))
+    })
+    .sort((a, b) => Number(a.hour) - Number(b.hour))
+    .slice(0, 8)
+  const max = Math.max(...hourlyEntries.map((item) => item.value), 1)
+
+  return (
+    <DataPanel title={content.audienceActivity}>
+      {hourlyEntries.length ? (
+        <div className="space-y-3">
+          {hourlyEntries.map((item) => (
+            <div key={item.hour} className="grid grid-cols-[3.5rem_1fr_4rem] items-center gap-3">
+              <span className="text-sm text-slate-500 dark:text-slate-400">{item.hour}h</span>
+              <div className="h-3 overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/10">
+                <div className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500" style={{ width: `${Math.max((item.value / max) * 100, 3)}%` }} />
+              </div>
+              <span className="text-right text-sm font-bold text-slate-900 dark:text-white">{formatCompactNumber(item.value)}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-lg bg-slate-100/70 p-5 text-sm text-slate-500 dark:bg-white/5 dark:text-slate-400">
+          <FaClock className="mb-3 h-5 w-5 text-purple-500" />
+          {content.audienceUnavailable}
+        </div>
+      )}
+    </DataPanel>
+  )
+}
+
+const InsightsPanels = ({ instagram, content }) => {
+  const accountInsights = instagram.accountInsights || {}
+
+  return (
+    <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <ProfileActionsPanel actions={accountInsights.profileActions} content={content} />
+      <EngagementPanel engagement={accountInsights.engagement} content={content} />
+      <AudienceActivityPanel audience={accountInsights.audienceActivity} content={content} />
+      <DataPanel title={content.topContent}>
+        {instagram.topMedia?.length ? (
+          <div className="space-y-3">
+            {instagram.topMedia.slice(0, 4).map((item) => (
+              <a
+                key={item.id}
+                href={item.permalink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-lg bg-slate-100/70 p-3 transition-colors hover:bg-slate-200/80 dark:bg-white/5 dark:hover:bg-white/10"
+              >
+                <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-200 dark:bg-slate-800">
+                  {item.thumbnailUrl ? (
+                    <img src={item.thumbnailUrl} alt={getMediaTitle(item)} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-slate-500">
+                      <FaCameraRetro />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{getMediaTitle(item)}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {content.reach}: {formatCompactNumber(item.insights?.reach || 0)} · {content.likes}: {formatCompactNumber(item.likeCount)}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg bg-slate-100/70 p-5 text-sm text-slate-500 dark:bg-white/5 dark:text-slate-400">
+            {content.noLiveInsights}
+          </div>
+        )}
+      </DataPanel>
+    </div>
+  )
+}
+
 const SocialStats = ({ data = socialMock }) => {
   const { language } = useLanguage()
   const content = labels[language]
@@ -418,9 +572,7 @@ const SocialStats = ({ data = socialMock }) => {
           <MediaGrid media={instagram.media} content={content} />
         </div>
 
-        <div className="mt-6">
-          <MoreDataPanel content={content} />
-        </div>
+        <InsightsPanels instagram={instagram} content={content} />
       </div>
     </section>
   )
@@ -445,6 +597,37 @@ ReachChart.propTypes = {
 }
 
 MoreDataPanel.propTypes = {
+  content: PropTypes.object.isRequired,
+}
+
+DataPoint.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.number,
+}
+
+DataPanel.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+}
+
+ProfileActionsPanel.propTypes = {
+  actions: PropTypes.object,
+  content: PropTypes.object.isRequired,
+}
+
+EngagementPanel.propTypes = {
+  engagement: PropTypes.object,
+  content: PropTypes.object.isRequired,
+}
+
+AudienceActivityPanel.propTypes = {
+  audience: PropTypes.object,
+  content: PropTypes.object.isRequired,
+}
+
+InsightsPanels.propTypes = {
+  instagram: PropTypes.object.isRequired,
   content: PropTypes.object.isRequired,
 }
 
