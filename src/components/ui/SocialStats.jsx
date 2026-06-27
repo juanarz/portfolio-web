@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { FaBullseye, FaCameraRetro, FaEye, FaUsers } from 'react-icons/fa'
+import { FaBullseye, FaCameraRetro, FaComment, FaEye, FaHeart, FaPlay, FaRegBookmark, FaShareAlt, FaUsers } from 'react-icons/fa'
 import { socialMock } from '../../data/socialMock'
 import { useLanguage } from '../../context/LanguageContext'
 
@@ -25,6 +25,15 @@ const labels = {
     profileAlt: 'Instagram profile',
     openProfile: 'Open Instagram profile',
     bio: 'Instagram professional account connected through Meta Graph API.',
+    latestContent: 'Latest posts and reels',
+    latestContentSubtitle: 'Thumbnails and metrics available per media item.',
+    unavailableMedia: 'Media insights will appear when the live API is available.',
+    likes: 'Likes',
+    comments: 'Comments',
+    saved: 'Saved',
+    shares: 'Shares',
+    plays: 'Plays',
+    views: 'Views',
     moreDataTitle: 'More Meta data we can add',
     moreData: [
       ['Top posts and reels', 'Recent media, thumbnails, links, captions, likes, comments and per-media insights.'],
@@ -53,6 +62,15 @@ const labels = {
     profileAlt: 'Perfil de Instagram',
     openProfile: 'Abrir perfil de Instagram',
     bio: 'Cuenta profesional de Instagram conectada mediante Meta Graph API.',
+    latestContent: 'Últimos posts y reels',
+    latestContentSubtitle: 'Miniaturas y métricas disponibles por publicación.',
+    unavailableMedia: 'Los insights por media aparecerán cuando el API en vivo esté disponible.',
+    likes: 'Likes',
+    comments: 'Comentarios',
+    saved: 'Guardados',
+    shares: 'Compartidos',
+    plays: 'Reproducciones',
+    views: 'Vistas',
     moreDataTitle: 'Más datos de Meta que podemos agregar',
     moreData: [
       ['Posts y reels destacados', 'Media reciente, miniaturas, enlaces, captions, likes, comentarios e insights por publicación.'],
@@ -100,7 +118,10 @@ const getFallbackInstagram = (data) => ({
 
 const buildInstagramData = (baseData, instagramStats) => {
   if (instagramStats?.profile && instagramStats?.insights) return instagramStats
-  return getFallbackInstagram(baseData)
+  return {
+    ...getFallbackInstagram(baseData),
+    media: [],
+  }
 }
 
 const MetricCard = ({ icon: Icon, label, value, accent = 'blue', description }) => {
@@ -188,6 +209,83 @@ const MoreDataPanel = ({ content }) => (
         </div>
       ))}
     </div>
+  </div>
+)
+
+const getMediaTitle = (media) => {
+  const cleanCaption = media.caption?.replace(/\s+/g, ' ').trim()
+  if (!cleanCaption) return media.mediaProductType || media.mediaType || 'Instagram media'
+  return cleanCaption.length > 72 ? `${cleanCaption.slice(0, 72)}...` : cleanCaption
+}
+
+const MediaMetric = ({ icon: Icon, label, value }) => {
+  if (typeof value !== 'number') return null
+
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100/80 px-2 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300" title={label}>
+      <Icon className="h-3 w-3" aria-hidden="true" />
+      {formatCompactNumber(value)}
+    </span>
+  )
+}
+
+const MediaCard = ({ item, content }) => (
+  <a
+    href={item.permalink}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="group overflow-hidden rounded-lg border border-slate-200/70 bg-white/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04]"
+  >
+    <div className="relative aspect-[4/5] overflow-hidden bg-slate-200 dark:bg-slate-800">
+      {item.thumbnailUrl ? (
+        <img
+          src={item.thumbnailUrl}
+          alt={getMediaTitle(item)}
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-slate-500 dark:text-slate-400">
+          <FaCameraRetro className="h-8 w-8" />
+        </div>
+      )}
+      <div className="absolute left-3 top-3 rounded-full bg-black/55 px-2 py-1 text-xs font-semibold text-white backdrop-blur">
+        {item.mediaProductType || item.mediaType}
+      </div>
+    </div>
+
+    <div className="p-4">
+      <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-slate-900 dark:text-white">{getMediaTitle(item)}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <MediaMetric icon={FaHeart} label={content.likes} value={item.likeCount} />
+        <MediaMetric icon={FaComment} label={content.comments} value={item.commentsCount} />
+        <MediaMetric icon={FaBullseye} label={content.reach} value={item.insights?.reach} />
+        <MediaMetric icon={FaRegBookmark} label={content.saved} value={item.insights?.saved} />
+        <MediaMetric icon={FaShareAlt} label={content.shares} value={item.insights?.shares} />
+        <MediaMetric icon={FaPlay} label={content.plays} value={item.insights?.plays ?? item.insights?.views} />
+      </div>
+    </div>
+  </a>
+)
+
+const MediaGrid = ({ media = [], content }) => (
+  <div className="glass-effect rounded-lg p-5 sm:p-6">
+    <div className="mb-5 flex flex-col gap-1">
+      <h3 className="text-xl font-bold text-slate-900 dark:text-white">{content.latestContent}</h3>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{content.latestContentSubtitle}</p>
+    </div>
+
+    {media.length ? (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {media.map((item) => (
+          <MediaCard key={item.id} item={item} content={content} />
+        ))}
+      </div>
+    ) : (
+      <div className="rounded-lg bg-slate-100/70 p-5 text-sm text-slate-500 dark:bg-white/5 dark:text-slate-400">
+        {content.unavailableMedia}
+      </div>
+    )}
   </div>
 )
 
@@ -317,6 +415,10 @@ const SocialStats = ({ data = socialMock }) => {
         </div>
 
         <div className="mt-6">
+          <MediaGrid media={instagram.media} content={content} />
+        </div>
+
+        <div className="mt-6">
           <MoreDataPanel content={content} />
         </div>
       </div>
@@ -343,6 +445,32 @@ ReachChart.propTypes = {
 }
 
 MoreDataPanel.propTypes = {
+  content: PropTypes.object.isRequired,
+}
+
+MediaMetric.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.number,
+}
+
+MediaCard.propTypes = {
+  item: PropTypes.shape({
+    caption: PropTypes.string,
+    commentsCount: PropTypes.number,
+    id: PropTypes.string.isRequired,
+    insights: PropTypes.object,
+    likeCount: PropTypes.number,
+    mediaProductType: PropTypes.string,
+    mediaType: PropTypes.string,
+    permalink: PropTypes.string.isRequired,
+    thumbnailUrl: PropTypes.string,
+  }).isRequired,
+  content: PropTypes.object.isRequired,
+}
+
+MediaGrid.propTypes = {
+  media: PropTypes.arrayOf(PropTypes.object),
   content: PropTypes.object.isRequired,
 }
 
