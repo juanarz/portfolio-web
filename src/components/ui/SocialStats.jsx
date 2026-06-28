@@ -162,13 +162,13 @@ const MetricCard = ({ icon: Icon, label, value, accent = 'blue', description }) 
   }
 
   return (
-    <div className="glass-effect rounded-lg p-5">
+    <div className="glass-effect min-w-0 rounded-lg p-5">
       <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br ${accentStyles[accent]}`}>
         <Icon className="h-5 w-5" aria-hidden="true" />
       </div>
       <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{value}</p>
-      {description && <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{description}</p>}
+      <p className="mt-2 break-words text-3xl font-bold text-slate-900 dark:text-white">{value}</p>
+      {description && <p className="mt-2 break-words text-xs text-slate-500 dark:text-slate-400">{description}</p>}
     </div>
   )
 }
@@ -184,7 +184,7 @@ const ReachChart = ({ points, content }) => {
   const change = previous ? ((latest - previous) / previous) * 100 : 0
 
   return (
-    <div className="rounded-lg border border-slate-200/70 bg-white/40 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+    <div className="min-w-0 rounded-lg border border-slate-200/70 bg-white/40 p-4 dark:border-white/10 dark:bg-white/[0.03]">
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg bg-slate-100/70 p-3 dark:bg-white/5">
           <p className="text-xs text-slate-500 dark:text-slate-400">{content.peak}</p>
@@ -208,7 +208,7 @@ const ReachChart = ({ points, content }) => {
           const isLatest = index === recentPoints.length - 1
 
           return (
-            <div key={`${point.endTime}-${point.value}`} className="grid grid-cols-[4.25rem_1fr_4rem] items-center gap-3">
+            <div key={`${point.endTime}-${point.value}`} className="grid min-w-0 grid-cols-[3.75rem_minmax(0,1fr)_3.5rem] items-center gap-2 sm:grid-cols-[4.25rem_minmax(0,1fr)_4rem] sm:gap-3">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{formatChartDate(point.endTime)}</span>
               <div className="h-4 overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/10">
                 <div
@@ -269,8 +269,8 @@ const MediaCard = ({ item, content }) => (
       </div>
     </div>
 
-    <div className="p-4">
-      <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-slate-900 dark:text-white">{getMediaTitle(item)}</p>
+    <div className="min-w-0 p-4">
+      <p className="line-clamp-2 min-h-[2.5rem] break-words text-sm font-semibold text-slate-900 dark:text-white">{getMediaTitle(item)}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <MediaMetric icon={FaHeart} label={content.likes} value={item.likeCount} />
         <MediaMetric icon={FaComment} label={content.comments} value={item.commentsCount} />
@@ -284,14 +284,14 @@ const MediaCard = ({ item, content }) => (
 )
 
 const MediaGrid = ({ media = [], content }) => (
-  <div className="glass-effect rounded-lg p-4 sm:p-6">
+  <div className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
     <div className="mb-5 flex flex-col gap-1">
       <h3 className="text-xl font-bold text-slate-900 dark:text-white">{content.latestContent}</h3>
       <p className="text-sm text-slate-500 dark:text-slate-400">{content.latestContentSubtitle}</p>
     </div>
 
     {media.length ? (
-      <div className="grid grid-cols-1 gap-4 min-[520px]:grid-cols-2 lg:grid-cols-3">
+      <div className="grid min-w-0 grid-cols-1 gap-4 min-[520px]:grid-cols-2 lg:grid-cols-3">
         {media.map((item) => (
           <MediaCard key={item.id} item={item} content={content} />
         ))}
@@ -308,18 +308,18 @@ const DataPoint = ({ icon: Icon, label, value }) => {
   const hasValue = typeof value === 'number'
 
   return (
-    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+    <div className="min-w-0 rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
       <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500 dark:text-blue-300">
         <Icon className="h-4 w-4" aria-hidden="true" />
       </div>
-      <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{hasValue ? formatNumber(value) : '--'}</p>
+      <p className="break-words text-sm text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-1 break-words text-2xl font-bold text-slate-900 dark:text-white">{hasValue ? formatNumber(value) : '--'}</p>
     </div>
   )
 }
 
 const DataPanel = ({ title, children }) => (
-  <div className="glass-effect rounded-lg p-5 sm:p-6">
+  <div className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
     <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
     <div className="mt-4">{children}</div>
   </div>
@@ -327,7 +327,7 @@ const DataPanel = ({ title, children }) => (
 
 const EngagementPanel = ({ engagement = {}, content }) => (
   <DataPanel title={content.engagement}>
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       <DataPoint icon={FaUsers} label={content.accountsEngaged} value={engagement.accountsEngaged} />
       <DataPoint icon={FaBolt} label={content.totalInteractions} value={engagement.totalInteractions} />
       <DataPoint icon={FaHeart} label={content.likes} value={engagement.likes} />
@@ -342,7 +342,7 @@ const InsightsPanels = ({ instagram, content }) => {
   const accountInsights = instagram.accountInsights || {}
 
   return (
-    <div className="mt-6 grid gap-6 lg:grid-cols-2">
+    <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-2">
       <EngagementPanel engagement={accountInsights.engagement} content={content} />
       <DataPanel title={content.topContent}>
         {instagram.topMedia?.length ? (
@@ -353,9 +353,9 @@ const InsightsPanels = ({ instagram, content }) => {
                 href={item.permalink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-lg bg-slate-100/70 p-3 transition-colors hover:bg-slate-200/80 dark:bg-white/5 dark:hover:bg-white/10"
+                className="flex min-w-0 items-center gap-3 rounded-lg bg-slate-100/70 p-3 transition-colors hover:bg-slate-200/80 dark:bg-white/5 dark:hover:bg-white/10"
               >
-                <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-200 dark:bg-slate-800">
+                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-slate-200 dark:bg-slate-800">
                   {item.thumbnailUrl ? (
                     <img src={item.thumbnailUrl} alt={getMediaTitle(item)} className="h-full w-full object-cover" loading="lazy" />
                   ) : (
@@ -432,8 +432,8 @@ const SocialStats = ({ data = socialMock }) => {
       : content.unavailable
 
   return (
-    <section id="social-stats" className="px-4 py-20">
-      <div className="mx-auto max-w-6xl">
+    <section id="social-stats" className="w-full overflow-x-hidden px-4 py-20">
+      <div className="mx-auto max-w-6xl min-w-0">
         <div className="mb-12 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-blue-500 dark:text-blue-400">{content.eyebrow}</p>
           <h2 className="mb-4 text-4xl font-bold">
@@ -443,18 +443,18 @@ const SocialStats = ({ data = socialMock }) => {
           <p className="mx-auto max-w-2xl text-lg text-slate-600 dark:text-gray-400">{content.subtitle}</p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.4fr]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[0.9fr_1.4fr]">
           <a
             href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="glass-effect group flex min-h-full flex-col justify-between rounded-lg p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-200/50 dark:hover:bg-white/10"
+            className="glass-effect group flex min-h-full min-w-0 flex-col justify-between rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-200/50 dark:hover:bg-white/10 sm:p-6"
             aria-label={content.openProfile}
           >
             <div>
-              <div className="mb-6 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-20 w-20 overflow-hidden rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1">
+              <div className="mb-6 flex min-w-0 flex-col gap-4 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 sm:h-20 sm:w-20">
                     {profile.profilePictureUrl ? (
                       <img
                         src={profile.profilePictureUrl}
@@ -467,9 +467,9 @@ const SocialStats = ({ data = socialMock }) => {
                       </div>
                     )}
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{profile.name}</h3>
-                    <p className="text-slate-500 dark:text-slate-400">@{profile.username}</p>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-2xl font-bold text-slate-900 dark:text-white">{profile.name}</h3>
+                    <p className="truncate text-slate-500 dark:text-slate-400">@{profile.username}</p>
                   </div>
                 </div>
                 <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500 dark:text-blue-300">
@@ -480,26 +480,26 @@ const SocialStats = ({ data = socialMock }) => {
               <p className="text-sm leading-relaxed text-slate-600 dark:text-gray-400">{content.bio}</p>
             </div>
 
-            <div className="mt-8 rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
-              <div className="flex items-end justify-between gap-4">
+            <div className="mt-8 min-w-0 rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+              <div className="flex min-w-0 flex-col gap-4 min-[420px]:flex-row min-[420px]:items-end min-[420px]:justify-between">
                 <div>
                   <p className="text-sm text-slate-500 dark:text-slate-400">{content.followers}</p>
                   <p className="mt-1 text-4xl font-bold text-slate-900 dark:text-white">{formatCompactNumber(profile.followers)}</p>
                 </div>
-                <span className="text-sm font-medium text-blue-500 dark:text-blue-300">@{profile.username}</span>
+                <span className="break-words text-sm font-medium text-blue-500 dark:text-blue-300">@{profile.username}</span>
               </div>
             </div>
           </a>
 
-          <div className="space-y-6">
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="min-w-0 space-y-6">
+            <div className="grid min-w-0 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <MetricCard icon={FaUsers} label={content.followers} value={formatNumber(profile.followers)} description={`@${profile.username}`} />
               <MetricCard icon={FaCameraRetro} label={content.posts} value={formatNumber(profile.mediaCount)} accent="purple" />
               <MetricCard icon={FaEye} label={content.profileViews} value={formatNumber(insights.profileViews)} accent="emerald" />
               <MetricCard icon={FaBullseye} label={content.reach} value={formatNumber(insights.latestReach)} accent="rose" />
             </div>
 
-            <div className="glass-effect rounded-lg p-5 sm:p-6">
+            <div className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{content.chartTitle}</h3>

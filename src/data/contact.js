@@ -3,7 +3,7 @@ import { faGithub, faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-
 
 export const contactContent = {
   en: {
-    heading: 'Get In Touch',
+    heading: 'Get In',
     highlight: 'Touch',
     subheading: "Have a project in mind? Let's work together!",
     infoTitle: 'Contact Information',
