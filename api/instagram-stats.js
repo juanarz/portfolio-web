@@ -1,17 +1,9 @@
 /* global process */
 
-import { Redis } from '@upstash/redis'
+import { getCache, getStoredInstagramToken, INSTAGRAM_STATS_CACHE_KEY, setCache, setStoredInstagramToken } from './_instagram-cache.js'
 
 const GRAPH_API_VERSION = 'v25.0'
 const GRAPH_API_BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`
-const CACHE_KEY = 'instagram:last-good-response'
-
-const redis = process.env.UPSTASH_REDIS_KV_REST_API_URL && process.env.UPSTASH_REDIS_KV_REST_API_TOKEN
-  ? new Redis({
-    url: process.env.UPSTASH_REDIS_KV_REST_API_URL,
-    token: process.env.UPSTASH_REDIS_KV_REST_API_TOKEN,
-  })
-  : null
 
 const json = (response, statusCode, payload) => {
   response.statusCode = statusCode
@@ -21,23 +13,11 @@ const json = (response, statusCode, payload) => {
 }
 
 const getCachedInstagramStats = async () => {
-  if (!redis) return null
-
-  try {
-    return await redis.get(CACHE_KEY)
-  } catch {
-    return null
-  }
+  return getCache(INSTAGRAM_STATS_CACHE_KEY)
 }
 
 const setCachedInstagramStats = async (payload) => {
-  if (!redis) return
-
-  try {
-    await redis.set(CACHE_KEY, payload)
-  } catch {
-    // Cache writes should not block fresh data.
-  }
+  return setCache(INSTAGRAM_STATS_CACHE_KEY, payload)
 }
 
 const graphRequest = async (path, accessToken) => {
@@ -216,7 +196,7 @@ export default async function handler(request, response) {
   }
 
   const accountId = process.env.INSTAGRAM_ACCOUNT_ID
-  const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN
+  const accessToken = await getStoredInstagramToken()
 
   if (!accountId || !accessToken) {
     return json(response, 503, {
@@ -277,6 +257,11 @@ export default async function handler(request, response) {
     }
 
     await setCachedInstagramStats(payload)
+    await setStoredInstagramToken({
+      accessToken,
+      source: 'stats-success',
+      lastValidatedAt: new Date().toISOString(),
+    })
 
     return json(response, 200, payload)
   } catch (error) {
