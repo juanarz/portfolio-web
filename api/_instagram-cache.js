@@ -4,6 +4,7 @@ import { Redis } from '@upstash/redis'
 
 export const INSTAGRAM_STATS_CACHE_KEY = 'instagram:last-good-response'
 export const INSTAGRAM_TOKEN_CACHE_KEY = 'instagram:access-token'
+export const INSTAGRAM_TOP_MEDIA_CACHE_KEY = 'instagram:top-media'
 
 export const redis = process.env.UPSTASH_REDIS_KV_REST_API_URL && process.env.UPSTASH_REDIS_KV_REST_API_TOKEN
   ? new Redis({

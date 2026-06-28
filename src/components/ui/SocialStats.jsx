@@ -25,7 +25,7 @@ const labels = {
     profileAlt: 'Instagram profile',
     openProfile: 'Open Instagram profile',
     bio: 'Instagram professional account connected through Meta Graph API.',
-    latestContent: 'Latest posts and reels',
+    latestContent: 'Most popular posts and reels',
     latestContentSubtitle: 'Thumbnails and metrics available per media item.',
     unavailableMedia: 'Media insights will appear when the live API is available.',
     likes: 'Likes',
@@ -66,7 +66,7 @@ const labels = {
     profileAlt: 'Perfil de Instagram',
     openProfile: 'Abrir perfil de Instagram',
     bio: 'Cuenta profesional de Instagram conectada mediante Meta Graph API.',
-    latestContent: 'Últimos posts y reels',
+    latestContent: 'Posts y reels más populares',
     latestContentSubtitle: 'Miniaturas y métricas disponibles por publicación.',
     unavailableMedia: 'Los insights por media aparecerán cuando el API en vivo esté disponible.',
     likes: 'Likes',
@@ -481,6 +481,7 @@ const SocialStats = ({ data = socialMock }) => {
   }, [])
 
   const instagram = useMemo(() => buildInstagramData(data, instagramStats), [data, instagramStats])
+  const popularMedia = instagram.topMedia?.length ? instagram.topMedia : instagram.media || []
   const profile = instagram.profile
   const insights = instagram.insights
   const instagramUrl = `https://www.instagram.com/${profile.username}/`
@@ -573,7 +574,7 @@ const SocialStats = ({ data = socialMock }) => {
         </div>
 
         <div className="mt-6">
-          <MediaGrid media={instagram.media} content={content} />
+          <MediaGrid media={popularMedia} content={content} />
         </div>
 
         <InsightsPanels instagram={instagram} content={content} />

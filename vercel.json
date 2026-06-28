@@ -7,6 +7,10 @@
     {
       "path": "/api/instagram-refresh-token",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/instagram-sync-media",
+      "schedule": "30 8 * * *"
     }
   ]
 }

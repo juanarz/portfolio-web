@@ -1,6 +1,6 @@
 /* global process */
 
-import { getCache, getStoredInstagramToken, INSTAGRAM_STATS_CACHE_KEY, setCache, setStoredInstagramToken } from './_instagram-cache.js'
+import { getCache, getStoredInstagramToken, INSTAGRAM_STATS_CACHE_KEY, INSTAGRAM_TOP_MEDIA_CACHE_KEY, setCache, setStoredInstagramToken } from './_instagram-cache.js'
 
 const GRAPH_API_VERSION = 'v25.0'
 const GRAPH_API_BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`
@@ -14,6 +14,10 @@ const json = (response, statusCode, payload) => {
 
 const getCachedInstagramStats = async () => {
   return getCache(INSTAGRAM_STATS_CACHE_KEY)
+}
+
+const getCachedTopMedia = async () => {
+  return getCache(INSTAGRAM_TOP_MEDIA_CACHE_KEY)
 }
 
 const setCachedInstagramStats = async (payload) => {
@@ -181,7 +185,15 @@ const getAccountInsights = async (accountId, accessToken, profileViews, reach) =
 
 const getMediaScore = (media) => {
   const insights = media.insights || {}
-  return insights.views || insights.plays || insights.reach || media.likeCount || 0
+
+  return (
+    (insights.views || insights.plays || 0) +
+    (insights.reach || 0) * 0.8 +
+    (media.likeCount || 0) * 25 +
+    (media.commentsCount || 0) * 60 +
+    (insights.saved || 0) * 80 +
+    (insights.shares || 0) * 90
+  )
 }
 
 const getTopMedia = (media) =>
@@ -213,7 +225,7 @@ export default async function handler(request, response) {
       graphRequest(`/${accountId}?fields=${profileFields}`, accessToken),
       graphRequest(`/${accountId}/insights?metric=profile_views&period=day&metric_type=total_value`, accessToken),
       graphRequest(`/${accountId}/insights?metric=reach&period=day`, accessToken),
-      graphRequest(`/${accountId}/media?fields=${mediaFields}&limit=6`, accessToken),
+      graphRequest(`/${accountId}/media?fields=${mediaFields}&limit=24`, accessToken),
     ])
 
     const profileViews = profileViewsResponse.data?.[0]?.total_value?.value || 0
@@ -221,6 +233,8 @@ export default async function handler(request, response) {
     const latestReach = reach.at(-1)?.value || 0
     const media = await getMediaInsights(mediaResponse.data || [], accessToken)
     const accountInsights = await getAccountInsights(accountId, accessToken, profileViews, reach)
+    const cachedTopMedia = await getCachedTopMedia()
+    const topMedia = cachedTopMedia?.topMedia?.length ? cachedTopMedia.topMedia.slice(0, 6) : getTopMedia(media)
 
     const payload = {
       configured: true,
@@ -239,7 +253,8 @@ export default async function handler(request, response) {
         reach,
       },
       media,
-      topMedia: getTopMedia(media),
+      topMedia,
+      topMediaUpdatedAt: cachedTopMedia?.updatedAt || null,
       accountInsights,
       summary: {
         instagram: {
