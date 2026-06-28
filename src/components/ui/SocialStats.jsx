@@ -466,7 +466,7 @@ const SocialStats = ({ data = socialMock }) => {
 
         if (isMounted) {
           setInstagramStats(payload)
-          setStatus('live')
+          setStatus(payload.stale ? 'stale' : 'live')
         }
       } catch {
         if (isMounted) setStatus('unavailable')
@@ -484,7 +484,11 @@ const SocialStats = ({ data = socialMock }) => {
   const profile = instagram.profile
   const insights = instagram.insights
   const instagramUrl = `https://www.instagram.com/${profile.username}/`
-  const statusLabel = status === 'live' ? content.live : status === 'loading' ? content.syncing : content.unavailable
+  const statusLabel = status === 'live'
+    ? content.live
+    : status === 'loading'
+      ? content.syncing
+      : content.unavailable
 
   return (
     <section id="social-stats" className="px-4 py-20">

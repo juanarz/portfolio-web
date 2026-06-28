@@ -15,6 +15,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@upstash/redis": "^1.38.0",
     "@use-gesture/react": "^10.3.1",
     "framer-motion": "^11.0.3",
     "next-themes": "^0.4.6",

@@ -1,13 +1,43 @@
 /* global process */
 
+import { Redis } from '@upstash/redis'
+
 const GRAPH_API_VERSION = 'v25.0'
 const GRAPH_API_BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`
+const CACHE_KEY = 'instagram:last-good-response'
+
+const redis = process.env.UPSTASH_REDIS_KV_REST_API_URL && process.env.UPSTASH_REDIS_KV_REST_API_TOKEN
+  ? new Redis({
+    url: process.env.UPSTASH_REDIS_KV_REST_API_URL,
+    token: process.env.UPSTASH_REDIS_KV_REST_API_TOKEN,
+  })
+  : null
 
 const json = (response, statusCode, payload) => {
   response.statusCode = statusCode
   response.setHeader('Content-Type', 'application/json')
   response.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600')
   response.end(JSON.stringify(payload))
+}
+
+const getCachedInstagramStats = async () => {
+  if (!redis) return null
+
+  try {
+    return await redis.get(CACHE_KEY)
+  } catch {
+    return null
+  }
+}
+
+const setCachedInstagramStats = async (payload) => {
+  if (!redis) return
+
+  try {
+    await redis.set(CACHE_KEY, payload)
+  } catch {
+    // Cache writes should not block fresh data.
+  }
 }
 
 const graphRequest = async (path, accessToken) => {
@@ -212,8 +242,9 @@ export default async function handler(request, response) {
     const media = await getMediaInsights(mediaResponse.data || [], accessToken)
     const accountInsights = await getAccountInsights(accountId, accessToken, profileViews, reach)
 
-    return json(response, 200, {
+    const payload = {
       configured: true,
+      stale: false,
       profile: {
         id: profile.id,
         username: profile.username,
@@ -243,10 +274,25 @@ export default async function handler(request, response) {
         instagram: reach.map((item) => item.value),
       },
       updatedAt: new Date().toISOString(),
-    })
+    }
+
+    await setCachedInstagramStats(payload)
+
+    return json(response, 200, payload)
   } catch (error) {
+    const cachedStats = await getCachedInstagramStats()
+
+    if (cachedStats) {
+      return json(response, 200, {
+        ...cachedStats,
+        stale: true,
+        cacheReason: error.message,
+      })
+    }
+
     return json(response, 502, {
       configured: true,
+      stale: false,
       error: error.message,
     })
   }
