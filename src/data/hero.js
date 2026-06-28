@@ -1,5 +1,6 @@
 import { faGithub, faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-icons'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { profile } from './profile'
 
 export const heroContent = {
   en: {
@@ -8,7 +9,7 @@ export const heroContent = {
     title: 'I build things for the web with data',
     description:
       "I'm a Systems Engineer specializing in full-stack development with Spring Boot & React and data-driven problem solving using SQL & Python. I build scalable web applications and transform data into actionable insights.",
-    profileImage: '/profile.png',
+    profileImage: profile.image,
     ctas: [
       {
         label: 'View My Work',
@@ -51,7 +52,7 @@ export const heroContent = {
     title: 'Construyo cosas para la web con datos',
     description:
       'Soy Ingeniero de Sistemas especializado en desarrollo full-stack con Spring Boot y React, y en la resolución de problemas con datos usando SQL y Python. Construyo aplicaciones web escalables y transformo datos en insights accionables.',
-    profileImage: '/profile.png',
+    profileImage: profile.image,
     ctas: [
       {
         label: 'Ver mi trabajo',

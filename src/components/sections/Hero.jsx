@@ -127,12 +127,14 @@ const Hero = () => {
 
       <div className="relative z-10 max-w-4xl mx-auto text-center animate-fade-in">
         {/* Profile Picture */}
-        <div className="relative z-0 mb-8 flex items-center justify-center animate-slide-up">
-          <img
-            src={content.profileImage}
-            alt={content.name}
-            className="relative z-10 w-32 h-32 sm:w-56 sm:h-56 rounded-full mx-auto hover:scale-105 transition-transform duration-300"
-          />
+        <div className="relative z-0 mb-6 sm:mb-8 flex items-center justify-center animate-slide-up">
+          <div className="relative z-10 h-32 w-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 shadow-lg sm:h-48 sm:w-48 md:h-56 md:w-56">
+            <img
+              src={content.profileImage}
+              alt={content.name}
+              className="h-full w-full rounded-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </div>
         </div>
 
         {/* Animated intro */}
@@ -159,12 +161,12 @@ const Hero = () => {
         </h2>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
+        <div className="mx-auto flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center sm:gap-4 mb-10 sm:mb-12 animate-slide-up">
           {content.ctas.map((cta) => (
             <a
               key={cta.href}
               href={cta.href}
-              className={`px-8 py-3 font-medium rounded-lg transition-all duration-300 transform hover:scale-105 ${
+              className={`flex min-h-12 w-full items-center justify-center px-6 py-3 text-center font-medium rounded-lg transition-all duration-300 transform hover:scale-105 sm:w-auto sm:min-w-44 ${
                 cta.variant === 'primary'
                   ? 'bg-blue-500 hover:bg-blue-600 text-white'
                   : 'glass-effect hover:bg-slate-200/50 dark:hover:bg-white/10 text-slate-700 dark:text-white'

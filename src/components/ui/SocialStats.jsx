@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { FaBolt, FaBullseye, FaCameraRetro, FaClock, FaComment, FaExternalLinkAlt, FaEye, FaHeart, FaMousePointer, FaPlay, FaRegBookmark, FaShareAlt, FaUsers } from 'react-icons/fa'
+import { FaBolt, FaBullseye, FaCameraRetro, FaComment, FaEye, FaHeart, FaPlay, FaRegBookmark, FaShareAlt, FaUsers } from 'react-icons/fa'
 import { socialMock } from '../../data/socialMock'
 import { useLanguage } from '../../context/LanguageContext'
+import { profile as personalProfile } from '../../data/profile'
 
 const labels = {
   en: {
@@ -112,7 +113,7 @@ const getFallbackInstagram = (data) => ({
     name: 'Juan Pablo',
     followers: data.summary.instagram.followers,
     mediaCount: data.summary.instagram.posts,
-    profilePictureUrl: '',
+    profilePictureUrl: personalProfile.image,
   },
   insights: {
     profileViews: data.summary.instagram.profileViews || 247,
@@ -226,20 +227,6 @@ const ReachChart = ({ points, content }) => {
   )
 }
 
-const MoreDataPanel = ({ content }) => (
-  <div className="glass-effect rounded-lg p-5 sm:p-6">
-    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{content.moreDataTitle}</h3>
-    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-      {content.moreData.map(([label, description]) => (
-        <div key={label} className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
-          <p className="text-sm font-semibold text-slate-800 dark:text-white">{label}</p>
-          <p className="mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{description}</p>
-        </div>
-      ))}
-    </div>
-  </div>
-)
-
 const getMediaTitle = (media) => {
   const cleanCaption = media.caption?.replace(/\s+/g, ' ').trim()
   if (!cleanCaption) return media.mediaProductType || media.mediaType || 'Instagram media'
@@ -262,7 +249,7 @@ const MediaCard = ({ item, content }) => (
     href={item.permalink}
     target="_blank"
     rel="noopener noreferrer"
-    className="group overflow-hidden rounded-lg border border-slate-200/70 bg-white/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04]"
+    className="group mx-auto w-full max-w-[22rem] overflow-hidden rounded-lg border border-slate-200/70 bg-white/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04] sm:max-w-none"
   >
     <div className="relative aspect-[4/5] overflow-hidden bg-slate-200 dark:bg-slate-800">
       {item.thumbnailUrl ? (
@@ -297,14 +284,14 @@ const MediaCard = ({ item, content }) => (
 )
 
 const MediaGrid = ({ media = [], content }) => (
-  <div className="glass-effect rounded-lg p-5 sm:p-6">
+  <div className="glass-effect rounded-lg p-4 sm:p-6">
     <div className="mb-5 flex flex-col gap-1">
       <h3 className="text-xl font-bold text-slate-900 dark:text-white">{content.latestContent}</h3>
       <p className="text-sm text-slate-500 dark:text-slate-400">{content.latestContentSubtitle}</p>
     </div>
 
     {media.length ? (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 min-[520px]:grid-cols-2 lg:grid-cols-3">
         {media.map((item) => (
           <MediaCard key={item.id} item={item} content={content} />
         ))}
@@ -338,16 +325,6 @@ const DataPanel = ({ title, children }) => (
   </div>
 )
 
-const ProfileActionsPanel = ({ actions = {}, content }) => (
-  <DataPanel title={content.profileActions}>
-    <div className="grid gap-3 sm:grid-cols-3">
-      <DataPoint icon={FaEye} label={content.profileViews} value={actions.profileViews} />
-      <DataPoint icon={FaExternalLinkAlt} label={content.websiteClicks} value={actions.websiteClicks} />
-      <DataPoint icon={FaMousePointer} label={content.profileLinksTaps} value={actions.profileLinksTaps} />
-    </div>
-  </DataPanel>
-)
-
 const EngagementPanel = ({ engagement = {}, content }) => (
   <DataPanel title={content.engagement}>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -361,49 +338,12 @@ const EngagementPanel = ({ engagement = {}, content }) => (
   </DataPanel>
 )
 
-const AudienceActivityPanel = ({ audience = {}, content }) => {
-  const onlineFollowers = audience.onlineFollowers || []
-  const hourlyEntries = onlineFollowers
-    .flatMap((item) => {
-      if (!item.value || typeof item.value !== 'object') return []
-      return Object.entries(item.value).map(([hour, value]) => ({ hour, value }))
-    })
-    .sort((a, b) => Number(a.hour) - Number(b.hour))
-    .slice(0, 8)
-  const max = Math.max(...hourlyEntries.map((item) => item.value), 1)
-
-  return (
-    <DataPanel title={content.audienceActivity}>
-      {hourlyEntries.length ? (
-        <div className="space-y-3">
-          {hourlyEntries.map((item) => (
-            <div key={item.hour} className="grid grid-cols-[3.5rem_1fr_4rem] items-center gap-3">
-              <span className="text-sm text-slate-500 dark:text-slate-400">{item.hour}h</span>
-              <div className="h-3 overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/10">
-                <div className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500" style={{ width: `${Math.max((item.value / max) * 100, 3)}%` }} />
-              </div>
-              <span className="text-right text-sm font-bold text-slate-900 dark:text-white">{formatCompactNumber(item.value)}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-lg bg-slate-100/70 p-5 text-sm text-slate-500 dark:bg-white/5 dark:text-slate-400">
-          <FaClock className="mb-3 h-5 w-5 text-purple-500" />
-          {content.audienceUnavailable}
-        </div>
-      )}
-    </DataPanel>
-  )
-}
-
 const InsightsPanels = ({ instagram, content }) => {
   const accountInsights = instagram.accountInsights || {}
 
   return (
     <div className="mt-6 grid gap-6 lg:grid-cols-2">
-      <ProfileActionsPanel actions={accountInsights.profileActions} content={content} />
       <EngagementPanel engagement={accountInsights.engagement} content={content} />
-      <AudienceActivityPanel audience={accountInsights.audienceActivity} content={content} />
       <DataPanel title={content.topContent}>
         {instagram.topMedia?.length ? (
           <div className="space-y-3">
@@ -601,10 +541,6 @@ ReachChart.propTypes = {
   content: PropTypes.object.isRequired,
 }
 
-MoreDataPanel.propTypes = {
-  content: PropTypes.object.isRequired,
-}
-
 DataPoint.propTypes = {
   icon: PropTypes.elementType.isRequired,
   label: PropTypes.string.isRequired,
@@ -616,18 +552,8 @@ DataPanel.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-ProfileActionsPanel.propTypes = {
-  actions: PropTypes.object,
-  content: PropTypes.object.isRequired,
-}
-
 EngagementPanel.propTypes = {
   engagement: PropTypes.object,
-  content: PropTypes.object.isRequired,
-}
-
-AudienceActivityPanel.propTypes = {
-  audience: PropTypes.object,
   content: PropTypes.object.isRequired,
 }
 

@@ -5,6 +5,7 @@ import ThemeToggle from '../ui/ThemeToggle'
 import LanguageToggle from '../ui/LanguageToggle'
 import { navLinks } from '../../data/navigation'
 import { useLanguage } from '../../context/LanguageContext'
+import { profile } from '../../data/profile'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -32,8 +33,16 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="#home" className="text-2xl font-bold text-gradient">
-            JP
+          <a
+            href="#home"
+            className="group flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-0.5 transition-transform duration-300 hover:scale-105"
+            aria-label="Juan Pablo"
+          >
+            <img
+              src={profile.image}
+              alt={profile.name}
+              className="h-full w-full rounded-full object-cover"
+            />
           </a>
 
           {/* Desktop Navigation */}
