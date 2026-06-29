@@ -20,14 +20,14 @@ const labels = {
   en: {
     title: 'Social',
     highlight: 'Media',
-    eyebrow: 'Instagram Media Kit',
+    eyebrow: 'Creator Analytics Dashboard',
     subtitle: 'Performance, audience and statistical insights from my Instagram professional account.',
-    overview: 'Instagram Creator Overview',
+    overview: 'Average Engagement Rate',
     overviewCopy: 'A performance-first snapshot for brands and collaborations.',
     audience: 'Audience Overview',
     audienceCopy: 'Who the content reaches and the audience signals available from Meta.',
     topContent: 'Top Performing Content',
-    topContentCopy: 'Selected reels with the highest organic reach and engagement.',
+    topContentCopy: 'Organic reach with no paid promotion.',
     statisticalInsights: 'Statistical Insights',
     statisticalCopy: 'Individual reel analysis based on reach, shares, saves and engagement rate.',
     globalAnalytics: 'Global Analytics',
@@ -55,7 +55,7 @@ const labels = {
     live: 'Live',
     syncing: 'Syncing',
     unavailable: 'Cached',
-    tracking: 'Tracking',
+    tracking: 'Coming Soon',
     noData: 'Data will appear after Meta returns enough audience information.',
     profileAlt: 'Instagram profile',
     openProfile: 'Open Instagram profile',
@@ -64,21 +64,23 @@ const labels = {
     median: 'Median',
     highest: 'Highest',
     outlier: 'Outlier',
-    correlation: 'Correlation',
+    correlation: 'Correlation Heatmap',
+    scatter: 'Scatter Plot',
+    regression: 'Regression',
     prediction: 'Prediction',
     distribution: 'Distribution',
   },
   es: {
     title: 'Redes',
     highlight: 'Sociales',
-    eyebrow: 'Instagram Media Kit',
+    eyebrow: 'Creator Analytics Dashboard',
     subtitle: 'Rendimiento, audiencia e insights estadísticos desde mi cuenta profesional de Instagram.',
-    overview: 'Instagram Creator Overview',
+    overview: 'Average Engagement Rate',
     overviewCopy: 'Resumen enfocado en resultados para marcas y colaboraciones.',
     audience: 'Audience Overview',
     audienceCopy: 'A quién llega el contenido y señales de audiencia disponibles desde Meta.',
     topContent: 'Top Performing Content',
-    topContentCopy: 'Reels seleccionados por mayor alcance orgánico e interacción.',
+    topContentCopy: 'Organic reach with no paid promotion.',
     statisticalInsights: 'Statistical Insights',
     statisticalCopy: 'Análisis individual por reel basado en alcance, compartidos, guardados y engagement rate.',
     globalAnalytics: 'Global Analytics',
@@ -106,7 +108,7 @@ const labels = {
     live: 'En vivo',
     syncing: 'Sincronizando',
     unavailable: 'Cache',
-    tracking: 'Tracking',
+    tracking: 'Coming Soon',
     noData: 'La data aparecera cuando Meta devuelva suficiente informacion de audiencia.',
     profileAlt: 'Perfil de Instagram',
     openProfile: 'Abrir perfil de Instagram',
@@ -115,7 +117,9 @@ const labels = {
     median: 'Mediana',
     highest: 'Mas alto',
     outlier: 'Outlier',
-    correlation: 'Correlacion',
+    correlation: 'Correlation Heatmap',
+    scatter: 'Scatter Plot',
+    regression: 'Regression',
     prediction: 'Prediccion',
     distribution: 'Distribucion',
   },
@@ -142,6 +146,19 @@ const formatChartDate = (value) => {
 
 const sum = (items) => items.reduce((total, value) => total + (Number(value) || 0), 0)
 
+const countryNames = {
+  AR: 'Argentina',
+  BR: 'Brazil',
+  CL: 'Chile',
+  CO: 'Colombia',
+  EC: 'Ecuador',
+  ES: 'Spain',
+  MX: 'Mexico',
+  PE: 'Peru',
+  US: 'United States',
+  VE: 'Venezuela',
+}
+
 const average = (items) => (items.length ? sum(items) / items.length : 0)
 
 const median = (items) => {
@@ -165,6 +182,38 @@ const pearson = (items, getX, getY) => {
   const denominatorY = Math.sqrt(sum(points.map(([, y]) => (y - avgY) ** 2)))
 
   return denominatorX && denominatorY ? numerator / (denominatorX * denominatorY) : 0
+}
+
+const getLinearRegression = (points) => {
+  if (points.length < 2) return { slope: 0, intercept: 0 }
+
+  const avgX = average(points.map(([x]) => x))
+  const avgY = average(points.map(([, y]) => y))
+  const numerator = sum(points.map(([x, y]) => (x - avgX) * (y - avgY)))
+  const denominator = sum(points.map(([x]) => (x - avgX) ** 2))
+  const slope = denominator ? numerator / denominator : 0
+
+  return {
+    slope,
+    intercept: avgY - slope * avgX,
+  }
+}
+
+const getQuartiles = (values) => {
+  const sorted = values.filter((value) => Number.isFinite(value)).sort((a, b) => a - b)
+  if (!sorted.length) return { min: 0, q1: 0, medianValue: 0, q3: 0, max: 0 }
+
+  const midpoint = Math.floor(sorted.length / 2)
+  const lower = sorted.slice(0, midpoint)
+  const upper = sorted.length % 2 ? sorted.slice(midpoint + 1) : sorted.slice(midpoint)
+
+  return {
+    min: sorted[0],
+    q1: median(lower.length ? lower : sorted),
+    medianValue: median(sorted),
+    q3: median(upper.length ? upper : sorted),
+    max: sorted.at(-1),
+  }
 }
 
 const getFallbackInstagram = (data) => ({
@@ -220,6 +269,13 @@ const getAudienceBreakdowns = (audience = {}) => {
   const countries = audience.countryDemographics?.[0]?.results || []
   const ageTotals = new Map()
   const genderTotals = new Map()
+  const countryItems = countries
+    .map((item) => ({
+      label: countryNames[item.dimension_values?.[0]] || item.dimension_values?.[0] || 'Unknown',
+      value: item.value || 0,
+    }))
+    .sort((a, b) => b.value - a.value)
+  const countryTotal = sum(countryItems.map((item) => item.value))
 
   ageGender.forEach((item) => {
     const [age, gender] = item.dimension_values || []
@@ -232,9 +288,11 @@ const getAudienceBreakdowns = (audience = {}) => {
   return {
     age: [...ageTotals.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value).slice(0, 5),
     gender: [...genderTotals.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value),
-    countries: countries
-      .map((item) => ({ label: item.dimension_values?.[0] || 'Unknown', value: item.value || 0 }))
-      .sort((a, b) => b.value - a.value)
+    countries: countryItems
+      .map((item) => ({
+        ...item,
+        valueLabel: countryTotal ? formatPercent((item.value / countryTotal) * 100) : formatPercent(0),
+      }))
       .slice(0, 5),
   }
 }
@@ -244,9 +302,28 @@ const getAnalytics = (media) => {
   const avgEr = average(engagementRates)
   const medianEr = median(engagementRates)
   const highestErMedia = media.reduce((best, item) => (getEngagementRate(item) > getEngagementRate(best || {}) ? item : best), null)
-  const viewsSharesCorrelation = pearson(media, getViews, getShares)
-  const reachEngagementCorrelation = pearson(media, getReach, getEngagementRate)
-  const likesViewsCorrelation = pearson(media, (item) => item.likeCount, getViews)
+  const estimatedFollowers = (item) => Math.round(getShares(item) * 0.05)
+  const metrics = [
+    { key: 'views', label: 'Views', getValue: getViews },
+    { key: 'likes', label: 'Likes', getValue: (item) => item.likeCount || 0 },
+    { key: 'shares', label: 'Shares', getValue: getShares },
+    { key: 'saves', label: 'Saves', getValue: getSaves },
+    { key: 'comments', label: 'Comments', getValue: (item) => item.commentsCount || 0 },
+    { key: 'followers', label: 'Followers est.', getValue: estimatedFollowers },
+  ]
+  const correlations = metrics.map((row) => (
+    metrics.map((column) => ({
+      row: row.key,
+      column: column.key,
+      rowLabel: row.label,
+      columnLabel: column.label,
+      value: row.key === column.key ? 1 : pearson(media, row.getValue, column.getValue),
+    }))
+  ))
+  const scatterPoints = media
+    .map((item) => [getShares(item), estimatedFollowers(item), item])
+    .filter(([shares, followers]) => shares > 0 && followers >= 0)
+  const regression = getLinearRegression(scatterPoints.map(([x, y]) => [x, y]))
   const avgShares = average(media.map(getShares).filter(Boolean))
   const estimatedFollowersPerThousandShares = Math.max(1, Math.round((avgShares || 1000) / 1000 * 8))
 
@@ -256,11 +333,11 @@ const getAnalytics = (media) => {
     highestErMedia,
     highestEr: highestErMedia ? getEngagementRate(highestErMedia) : 0,
     outlier: highestErMedia,
-    correlations: [
-      { label: 'Likes - Views', value: likesViewsCorrelation },
-      { label: 'Shares - Views', value: viewsSharesCorrelation },
-      { label: 'Reach - ER', value: reachEngagementCorrelation },
-    ],
+    metrics,
+    correlations,
+    scatterPoints,
+    regression,
+    erQuartiles: getQuartiles(engagementRates),
     estimatedFollowersPerThousandShares,
   }
 }
@@ -307,7 +384,7 @@ const ProgressList = ({ items, emptyLabel }) => {
           <div className="h-3 overflow-hidden rounded-full bg-slate-200/80 dark:bg-white/10">
             <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: `${Math.max((item.value / max) * 100, 4)}%` }} />
           </div>
-          <span className="text-right text-xs font-bold text-slate-700 dark:text-slate-200">{formatCompactNumber(item.value)}</span>
+          <span className="text-right text-xs font-bold text-slate-700 dark:text-slate-200">{item.valueLabel || formatCompactNumber(item.value)}</span>
         </div>
       ))}
     </div>
@@ -570,50 +647,141 @@ const StatisticalInsights = ({ media, content }) => {
   )
 }
 
+const Heatmap = ({ analytics, content }) => {
+  const colorFor = (value) => {
+    const intensity = Math.round(Math.abs(value) * 80) + 15
+    return value >= 0
+      ? `rgba(59, 130, 246, ${intensity / 100})`
+      : `rgba(244, 63, 94, ${intensity / 100})`
+  }
+
+  return (
+    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+      <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.correlation}</h4>
+      <div className="overflow-x-auto pb-2">
+        <div className="grid min-w-[34rem] gap-1" style={{ gridTemplateColumns: `5.5rem repeat(${analytics.metrics.length}, minmax(3.75rem, 1fr))` }}>
+          <div />
+          {analytics.metrics.map((metric) => (
+            <div key={metric.key} className="truncate text-center text-[0.7rem] font-semibold text-slate-500 dark:text-slate-400">{metric.label}</div>
+          ))}
+          {analytics.correlations.flatMap((row) => [
+            <div key={`${row[0].row}-label-fixed`} className="flex items-center text-[0.7rem] font-semibold text-slate-500 dark:text-slate-400">{row[0].rowLabel}</div>,
+            ...row.map((cell) => (
+              <div
+                key={`${cell.row}-${cell.column}`}
+                className="flex h-12 items-center justify-center rounded text-xs font-bold text-white"
+                style={{ backgroundColor: colorFor(cell.value) }}
+                title={`${cell.rowLabel} / ${cell.columnLabel}: ${cell.value.toFixed(2)}`}
+              >
+                {cell.value.toFixed(2)}
+              </div>
+            )),
+          ])}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const ScatterPlot = ({ analytics, content }) => {
+  const points = analytics.scatterPoints
+  const maxX = Math.max(...points.map(([x]) => x), 1)
+  const maxY = Math.max(...points.map(([, y]) => y), 1)
+
+  return (
+    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+      <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.scatter}</h4>
+      <svg viewBox="0 0 360 220" className="h-56 w-full overflow-visible" role="img" aria-label="Shares vs estimated followers scatter plot">
+        <line x1="42" y1="178" x2="334" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
+        <line x1="42" y1="22" x2="42" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
+        {points.map(([shares, followers, item]) => {
+          const x = 42 + (shares / maxX) * 292
+          const y = 178 - (followers / maxY) * 156
+
+          return (
+            <circle key={item.id} cx={x} cy={y} r="5" className="fill-blue-500 dark:fill-blue-300">
+              <title>{`${getMediaTitle(item)}: ${formatCompactNumber(shares)} shares`}</title>
+            </circle>
+          )
+        })}
+        <text x="186" y="212" textAnchor="middle" className="fill-slate-500 text-[11px] dark:fill-slate-400">{content.shares}</text>
+        <text x="10" y="102" textAnchor="middle" transform="rotate(-90 10 102)" className="fill-slate-500 text-[11px] dark:fill-slate-400">Followers est.</text>
+      </svg>
+    </div>
+  )
+}
+
+const RegressionChart = ({ analytics, content }) => {
+  const points = analytics.scatterPoints
+  const maxX = Math.max(...points.map(([x]) => x), 1)
+  const maxY = Math.max(...points.map(([, y]) => y), 1)
+  const yAtStart = analytics.regression.intercept
+  const yAtEnd = analytics.regression.slope * maxX + analytics.regression.intercept
+  const lineStartY = 178 - (Math.max(0, yAtStart) / maxY) * 156
+  const lineEndY = 178 - (Math.max(0, yAtEnd) / maxY) * 156
+
+  return (
+    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+      <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.regression}</h4>
+      <svg viewBox="0 0 360 220" className="h-56 w-full overflow-visible" role="img" aria-label="Regression line for shares and estimated followers">
+        <line x1="42" y1="178" x2="334" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
+        <line x1="42" y1="22" x2="42" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
+        <line x1="42" y1={lineStartY} x2="334" y2={lineEndY} stroke="#8b5cf6" strokeWidth="4" strokeLinecap="round" />
+        {points.map(([shares, followers, item]) => (
+          <circle
+            key={item.id}
+            cx={42 + (shares / maxX) * 292}
+            cy={178 - (followers / maxY) * 156}
+            r="4"
+            className="fill-blue-500/70 dark:fill-blue-300/80"
+          />
+        ))}
+      </svg>
+      <div className="rounded-lg bg-white/60 p-4 text-center dark:bg-slate-900/40">
+        <p className="text-sm text-slate-500 dark:text-slate-400">1,000 {content.shares}</p>
+        <p className="my-2 text-2xl font-bold text-gradient">=</p>
+        <p className="text-2xl font-bold text-slate-900 dark:text-white">~{analytics.estimatedFollowersPerThousandShares}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">estimated new followers</p>
+      </div>
+    </div>
+  )
+}
+
+const DistributionBoxplot = ({ analytics, content }) => {
+  const { min, q1, medianValue, q3, max } = analytics.erQuartiles
+  const scale = (value) => (max ? (value / max) * 100 : 0)
+
+  return (
+    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+      <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.distribution}</h4>
+      <div className="relative my-8 h-16">
+        <div className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-slate-300 dark:bg-white/20" style={{ left: `${scale(min)}%`, right: `${100 - scale(max)}%` }} />
+        <div className="absolute top-1/2 h-10 -translate-y-1/2 rounded-lg bg-gradient-to-r from-blue-500/70 to-purple-500/70" style={{ left: `${scale(q1)}%`, right: `${100 - scale(q3)}%` }} />
+        <div className="absolute top-2 h-12 w-1 rounded-full bg-slate-900 dark:bg-white" style={{ left: `${scale(medianValue)}%` }} />
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <ContentMetric label={content.average} value={formatPercent(analytics.avgEr)} />
+        <ContentMetric label={content.median} value={formatPercent(analytics.medianEr)} />
+        <ContentMetric label={content.highest} value={formatPercent(analytics.highestEr)} />
+        <ContentMetric label={content.outlier} value={analytics.outlier ? formatCompactNumber(getViews(analytics.outlier)) : '--'} />
+      </div>
+    </div>
+  )
+}
+
 const GlobalAnalytics = ({ media, content }) => {
   const analytics = getAnalytics(media)
-  const erValues = media.map(getEngagementRate).filter(Boolean)
 
   return (
     <section className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
       <SectionHeader title={content.globalAnalytics} copy={content.globalCopy} />
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
-          <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.correlation}</h4>
-          <div className="space-y-3">
-            {analytics.correlations.map((item) => (
-              <div key={item.label}>
-                <div className="mb-1 flex justify-between text-sm">
-                  <span className="text-slate-600 dark:text-slate-300">{item.label}</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{item.value.toFixed(2)}</span>
-                </div>
-                <div className="h-3 overflow-hidden rounded-full bg-slate-200/80 dark:bg-white/10">
-                  <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: `${Math.max(Math.abs(item.value) * 100, 4)}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
+      <div className="grid gap-5">
+        <Heatmap analytics={analytics} content={content} />
+        <div className="grid gap-5 lg:grid-cols-2">
+          <ScatterPlot analytics={analytics} content={content} />
+          <RegressionChart analytics={analytics} content={content} />
         </div>
-        <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
-          <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.prediction}</h4>
-          <div className="rounded-lg bg-white/60 p-4 text-center dark:bg-slate-900/40">
-            <p className="text-sm text-slate-500 dark:text-slate-400">1,000 {content.shares}</p>
-            <p className="my-3 text-3xl font-bold text-gradient">=</p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">~{analytics.estimatedFollowersPerThousandShares}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">estimated new followers</p>
-          </div>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">Reels with higher shares show stronger distribution potential across analyzed content.</p>
-        </div>
-        <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
-          <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.distribution}</h4>
-          <div className="grid grid-cols-2 gap-3">
-            <ContentMetric label={content.average} value={formatPercent(analytics.avgEr)} />
-            <ContentMetric label={content.median} value={formatPercent(analytics.medianEr)} />
-            <ContentMetric label={content.highest} value={formatPercent(analytics.highestEr)} />
-            <ContentMetric label={content.outlier} value={analytics.outlier ? formatCompactNumber(getViews(analytics.outlier)) : '--'} />
-          </div>
-          <MiniSparkline values={erValues} />
-        </div>
+        <DistributionBoxplot analytics={analytics} content={content} />
       </div>
     </section>
   )
@@ -751,7 +919,7 @@ MetricCard.propTypes = {
 }
 
 ProgressList.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.number })).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.number, valueLabel: PropTypes.string })).isRequired,
   emptyLabel: PropTypes.string.isRequired,
 }
 
@@ -779,6 +947,48 @@ AudienceOverview.propTypes = {
 ContentMetric.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
+}
+
+const analyticsShape = PropTypes.shape({
+  avgEr: PropTypes.number,
+  medianEr: PropTypes.number,
+  highestEr: PropTypes.number,
+  outlier: PropTypes.object,
+  metrics: PropTypes.arrayOf(PropTypes.object),
+  correlations: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
+  scatterPoints: PropTypes.arrayOf(PropTypes.array),
+  regression: PropTypes.shape({
+    slope: PropTypes.number,
+    intercept: PropTypes.number,
+  }),
+  erQuartiles: PropTypes.shape({
+    min: PropTypes.number,
+    q1: PropTypes.number,
+    medianValue: PropTypes.number,
+    q3: PropTypes.number,
+    max: PropTypes.number,
+  }),
+  estimatedFollowersPerThousandShares: PropTypes.number,
+})
+
+Heatmap.propTypes = {
+  analytics: analyticsShape.isRequired,
+  content: PropTypes.object.isRequired,
+}
+
+ScatterPlot.propTypes = {
+  analytics: analyticsShape.isRequired,
+  content: PropTypes.object.isRequired,
+}
+
+RegressionChart.propTypes = {
+  analytics: analyticsShape.isRequired,
+  content: PropTypes.object.isRequired,
+}
+
+DistributionBoxplot.propTypes = {
+  analytics: analyticsShape.isRequired,
+  content: PropTypes.object.isRequired,
 }
 
 TopContentCard.propTypes = {
