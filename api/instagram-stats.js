@@ -144,6 +144,7 @@ const getAccountInsights = async (accountId, accessToken, profileViews, reach) =
     saves,
     onlineFollowers,
     followerDemographics,
+    countryDemographics,
   ] = await Promise.all([
     getAccountInsight(accountId, 'website_clicks', accessToken),
     getAccountInsight(accountId, 'profile_links_taps', accessToken, { metricType: 'total_value' }),
@@ -158,6 +159,11 @@ const getAccountInsights = async (accountId, accessToken, profileViews, reach) =
       period: 'lifetime',
       metricType: 'total_value',
       breakdown: 'age,gender',
+    }),
+    getAccountInsight(accountId, 'follower_demographics', accessToken, {
+      period: 'lifetime',
+      metricType: 'total_value',
+      breakdown: 'country',
     }),
   ])
 
@@ -178,6 +184,7 @@ const getAccountInsights = async (accountId, accessToken, profileViews, reach) =
     audienceActivity: {
       onlineFollowers: onlineFollowers.values,
       followerDemographics: followerDemographics.totalValue?.breakdowns || [],
+      countryDemographics: countryDemographics.totalValue?.breakdowns || [],
     },
     reach,
   }
@@ -220,11 +227,13 @@ export default async function handler(request, response) {
   try {
     const profileFields = 'id,username,name,followers_count,media_count,profile_picture_url'
     const mediaFields = 'id,caption,comments_count,like_count,media_product_type,media_type,media_url,permalink,thumbnail_url,timestamp'
+    const since = Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000)
+    const until = Math.floor(Date.now() / 1000)
 
     const [profile, profileViewsResponse, reachResponse, mediaResponse] = await Promise.all([
       graphRequest(`/${accountId}?fields=${profileFields}`, accessToken),
       graphRequest(`/${accountId}/insights?metric=profile_views&period=day&metric_type=total_value`, accessToken),
-      graphRequest(`/${accountId}/insights?metric=reach&period=day`, accessToken),
+      graphRequest(`/${accountId}/insights?metric=reach&period=day&since=${since}&until=${until}`, accessToken),
       graphRequest(`/${accountId}/media?fields=${mediaFields}&limit=24`, accessToken),
     ])
 
