@@ -285,9 +285,22 @@ const getAudienceBreakdowns = (audience = {}) => {
     if (gender) genderTotals.set(gender, (genderTotals.get(gender) || 0) + value)
   })
 
+  const ageItems = [...ageTotals.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value)
+  const genderItems = [...genderTotals.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value)
+  const ageTotal = sum(ageItems.map((item) => item.value))
+  const genderTotal = sum(genderItems.map((item) => item.value))
+
   return {
-    age: [...ageTotals.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value).slice(0, 5),
-    gender: [...genderTotals.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value),
+    age: ageItems
+      .map((item) => ({
+        ...item,
+        valueLabel: ageTotal ? formatPercent((item.value / ageTotal) * 100) : formatPercent(0),
+      }))
+      .slice(0, 5),
+    gender: genderItems.map((item) => ({
+      ...item,
+      valueLabel: genderTotal ? formatPercent((item.value / genderTotal) * 100) : formatPercent(0),
+    })),
     countries: countryItems
       .map((item) => ({
         ...item,
@@ -358,7 +371,7 @@ const MetricCard = ({ icon: Icon, label, value, accent = 'blue', description }) 
   }
 
   return (
-    <div className="glass-effect min-w-0 rounded-lg p-5">
+    <div className="glass-effect min-w-0 max-w-full overflow-hidden rounded-lg p-5">
       <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br ${accentStyles[accent]}`}>
         <Icon className="h-5 w-5" aria-hidden="true" />
       </div>
@@ -379,7 +392,7 @@ const ProgressList = ({ items, emptyLabel }) => {
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <div key={item.label} className="grid min-w-0 grid-cols-[4.5rem_minmax(0,1fr)_4rem] items-center gap-3">
+        <div key={item.label} className="grid min-w-0 grid-cols-[3.75rem_minmax(0,1fr)_3.5rem] items-center gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)_4rem] sm:gap-3">
           <span className="truncate text-sm font-medium text-slate-600 dark:text-slate-300">{item.label}</span>
           <div className="h-3 overflow-hidden rounded-full bg-slate-200/80 dark:bg-white/10">
             <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: `${Math.max((item.value / max) * 100, 4)}%` }} />
@@ -403,7 +416,7 @@ const MiniSparkline = ({ values }) => {
   }).join(' ')
 
   return (
-    <svg viewBox="0 0 100 100" className="h-20 w-full overflow-visible" role="img" aria-label="Performance sparkline">
+    <svg viewBox="0 0 100 100" className="h-20 w-full overflow-hidden" role="img" aria-label="Performance sparkline">
       <polyline fill="none" stroke="url(#sparklineGradient)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" points={points} />
       <defs>
         <linearGradient id="sparklineGradient" x1="0" x2="1">
@@ -528,7 +541,7 @@ const AudienceOverview = ({ instagram, content }) => {
   const reach30 = sum((instagram.insights.reach || []).map((item) => item.value))
 
   return (
-    <section className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
+    <section className="glass-effect min-w-0 max-w-full overflow-hidden rounded-lg p-4 sm:p-6">
       <SectionHeader title={content.audience} copy={content.audienceCopy} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard icon={FaUsers} label={content.followers} value={formatNumber(instagram.profile.followers)} />
@@ -537,15 +550,15 @@ const AudienceOverview = ({ instagram, content }) => {
         <MetricCard icon={FaChartLine} label={content.monthlyGrowth} value={content.tracking} accent="rose" />
       </div>
       <div className="mt-5 grid gap-5 lg:grid-cols-3">
-        <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+        <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
           <h4 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white"><FaGlobeAmericas /> {content.countries}</h4>
           <ProgressList items={audience.countries} emptyLabel={content.noData} />
         </div>
-        <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+        <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
           <h4 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white"><FaUsers /> {content.age}</h4>
           <ProgressList items={audience.age} emptyLabel={content.noData} />
         </div>
-        <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+        <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
           <h4 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white"><FaVenusMars /> {content.gender}</h4>
           <ProgressList items={audience.gender} emptyLabel={content.noData} />
         </div>
@@ -595,7 +608,7 @@ const TopContentCard = ({ item, content }) => (
 )
 
 const TopPerformingContent = ({ media, content }) => (
-  <section className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
+  <section className="glass-effect min-w-0 max-w-full overflow-hidden rounded-lg p-4 sm:p-6">
     <SectionHeader title={content.topContent} copy={content.topContentCopy} />
     {media.length ? (
       <div className="grid min-w-0 grid-cols-1 gap-4 min-[520px]:grid-cols-2 lg:grid-cols-3">
@@ -613,7 +626,7 @@ const StatisticalInsights = ({ media, content }) => {
   const sorted = [...media].sort((a, b) => getEngagementRate(b) - getEngagementRate(a)).slice(0, 4)
 
   return (
-    <section className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
+    <section className="glass-effect min-w-0 max-w-full overflow-hidden rounded-lg p-4 sm:p-6">
       <SectionHeader title={content.statisticalInsights} copy={content.statisticalCopy} />
       <div className="grid gap-4 lg:grid-cols-2">
         {sorted.map((item, index) => {
@@ -626,7 +639,7 @@ const StatisticalInsights = ({ media, content }) => {
               : 'Strong save behavior, showing practical value and repeat-view potential for the audience.'
 
           return (
-            <article key={item.id} className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+            <article key={item.id} className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
               <div className="flex min-w-0 gap-3">
                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-800">
                   {item.thumbnailUrl ? <img src={item.thumbnailUrl} alt={getMediaTitle(item)} className="h-full w-full object-cover" loading="lazy" /> : <FaCameraRetro />}
@@ -656,9 +669,9 @@ const Heatmap = ({ analytics, content }) => {
   }
 
   return (
-    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
       <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.correlation}</h4>
-      <div className="overflow-x-auto pb-2">
+      <div className="max-w-full overflow-x-auto pb-2">
         <div className="grid min-w-[34rem] gap-1" style={{ gridTemplateColumns: `5.5rem repeat(${analytics.metrics.length}, minmax(3.75rem, 1fr))` }}>
           <div />
           {analytics.metrics.map((metric) => (
@@ -689,9 +702,9 @@ const ScatterPlot = ({ analytics, content }) => {
   const maxY = Math.max(...points.map(([, y]) => y), 1)
 
   return (
-    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
       <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.scatter}</h4>
-      <svg viewBox="0 0 360 220" className="h-56 w-full overflow-visible" role="img" aria-label="Shares vs estimated followers scatter plot">
+      <svg viewBox="0 0 360 220" className="h-52 w-full overflow-hidden sm:h-56" role="img" aria-label="Shares vs estimated followers scatter plot">
         <line x1="42" y1="178" x2="334" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
         <line x1="42" y1="22" x2="42" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
         {points.map(([shares, followers, item]) => {
@@ -721,9 +734,9 @@ const RegressionChart = ({ analytics, content }) => {
   const lineEndY = 178 - (Math.max(0, yAtEnd) / maxY) * 156
 
   return (
-    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
       <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.regression}</h4>
-      <svg viewBox="0 0 360 220" className="h-56 w-full overflow-visible" role="img" aria-label="Regression line for shares and estimated followers">
+      <svg viewBox="0 0 360 220" className="h-52 w-full overflow-hidden sm:h-56" role="img" aria-label="Regression line for shares and estimated followers">
         <line x1="42" y1="178" x2="334" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
         <line x1="42" y1="22" x2="42" y2="178" stroke="currentColor" className="text-slate-300 dark:text-white/15" />
         <line x1="42" y1={lineStartY} x2="334" y2={lineEndY} stroke="#8b5cf6" strokeWidth="4" strokeLinecap="round" />
@@ -752,14 +765,14 @@ const DistributionBoxplot = ({ analytics, content }) => {
   const scale = (value) => (max ? (value / max) * 100 : 0)
 
   return (
-    <div className="rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-lg bg-slate-100/70 p-4 dark:bg-white/5">
       <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">{content.distribution}</h4>
       <div className="relative my-8 h-16">
         <div className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-slate-300 dark:bg-white/20" style={{ left: `${scale(min)}%`, right: `${100 - scale(max)}%` }} />
         <div className="absolute top-1/2 h-10 -translate-y-1/2 rounded-lg bg-gradient-to-r from-blue-500/70 to-purple-500/70" style={{ left: `${scale(q1)}%`, right: `${100 - scale(q3)}%` }} />
         <div className="absolute top-2 h-12 w-1 rounded-full bg-slate-900 dark:bg-white" style={{ left: `${scale(medianValue)}%` }} />
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-4">
         <ContentMetric label={content.average} value={formatPercent(analytics.avgEr)} />
         <ContentMetric label={content.median} value={formatPercent(analytics.medianEr)} />
         <ContentMetric label={content.highest} value={formatPercent(analytics.highestEr)} />
@@ -773,7 +786,7 @@ const GlobalAnalytics = ({ media, content }) => {
   const analytics = getAnalytics(media)
 
   return (
-    <section className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
+    <section className="glass-effect min-w-0 max-w-full overflow-hidden rounded-lg p-4 sm:p-6">
       <SectionHeader title={content.globalAnalytics} copy={content.globalCopy} />
       <div className="grid gap-5">
         <Heatmap analytics={analytics} content={content} />
@@ -788,7 +801,7 @@ const GlobalAnalytics = ({ media, content }) => {
 }
 
 const LiveDashboard = ({ instagram, content }) => (
-  <section className="glass-effect min-w-0 rounded-lg p-4 sm:p-6">
+  <section className="glass-effect min-w-0 max-w-full overflow-hidden rounded-lg p-4 sm:p-6">
     <SectionHeader title={content.liveDashboard} copy={content.liveCopy} />
     <div className="grid gap-5 lg:grid-cols-[1fr_1.4fr]">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
@@ -882,8 +895,8 @@ const SocialStats = ({ data = socialMock }) => {
   const statusLabel = status === 'live' ? content.live : status === 'loading' ? content.syncing : content.unavailable
 
   return (
-    <section id="social-stats" className="w-full overflow-x-hidden px-4 py-20">
-      <div className="mx-auto max-w-6xl min-w-0 space-y-8">
+    <section id="social-stats" className="w-full max-w-full overflow-x-hidden px-4 py-20">
+      <div className="mx-auto max-w-6xl min-w-0 overflow-x-hidden space-y-8">
         <div className="text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-blue-500 dark:text-blue-400">{content.eyebrow}</p>
           <h2 className="mb-4 text-4xl font-bold">

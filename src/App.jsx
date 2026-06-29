@@ -58,15 +58,15 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-dark-bg transition-colors duration-300 fade-in-content">
+    <div className="min-h-screen overflow-x-hidden bg-slate-50 dark:bg-dark-bg transition-colors duration-300 fade-in-content">
       <Navbar />
-      <main>
+      <main className="overflow-x-hidden">
         <Hero />
         <About />
         <Experience />
         <Skills />
         <Projects />
-  <SocialStats />
+        <SocialStats />
         <Contact />
       </main>
       <Footer />
