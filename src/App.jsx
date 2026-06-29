@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import Navbar from './components/layout/Navbar'
 import Hero from './components/sections/Hero'
 import About from './components/sections/About'
@@ -10,15 +10,48 @@ import Experience from './components/sections/Experience'
 import SocialStats from './components/ui/SocialStats'
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
+  const initialHashRef = useRef(typeof window !== 'undefined' ? window.location.hash : '')
+  const [isLoading, setIsLoading] = useState(() => !initialHashRef.current)
 
   useEffect(() => {
+    if (!isLoading) return undefined
+
     const timer = setTimeout(() => {
       setIsLoading(false)
     }, 5000) // 5 segundos para que puedas ver el loading
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [isLoading])
+
+  useLayoutEffect(() => {
+    if (isLoading) return undefined
+
+    const scrollToHash = (behavior = 'smooth') => {
+      const hash = window.location.hash || initialHashRef.current
+      if (!hash) return
+
+      const target = document.getElementById(hash.slice(1))
+      if (!target) return
+
+      const navbarOffset = 80
+      const top = target.getBoundingClientRect().top + window.scrollY - navbarOffset
+      window.scrollTo({ top: Math.max(top, 0), behavior })
+    }
+
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+
+    const handleHashChange = () => scrollToHash()
+    window.requestAnimationFrame(() => scrollToHash('auto'))
+    const initialScrolls = [0, 50, 300, 900, 1800, 3200].map((delay) => window.setTimeout(() => scrollToHash('auto'), delay))
+    window.addEventListener('hashchange', handleHashChange)
+
+    return () => {
+      initialScrolls.forEach((timer) => window.clearTimeout(timer))
+      window.removeEventListener('hashchange', handleHashChange)
+    }
+  }, [isLoading])
 
   if (isLoading) {
     return (

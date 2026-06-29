@@ -890,12 +890,28 @@ const SocialStats = ({ data = socialMock }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (window.location.hash !== '#social-stats') return undefined
+
+    const scrollToSection = () => {
+      const target = document.getElementById('social-stats')
+      if (!target) return
+
+      const navbarOffset = 80
+      const top = target.getBoundingClientRect().top + window.scrollY - navbarOffset
+      window.scrollTo({ top: Math.max(top, 0), behavior: 'auto' })
+    }
+    const timers = [50, 300, 900, 1800, 3200].map((delay) => window.setTimeout(scrollToSection, delay))
+
+    return () => timers.forEach((timer) => window.clearTimeout(timer))
+  }, [])
+
   const instagram = useMemo(() => buildInstagramData(data, instagramStats), [data, instagramStats])
   const topMedia = instagram.topMedia?.length ? instagram.topMedia : instagram.media || []
   const statusLabel = status === 'live' ? content.live : status === 'loading' ? content.syncing : content.unavailable
 
   return (
-    <section id="social-stats" className="w-full max-w-full overflow-x-hidden px-4 py-20">
+    <section id="social-stats" className="w-full max-w-full scroll-mt-20 overflow-x-hidden px-4 py-20">
       <div className="mx-auto max-w-6xl min-w-0 overflow-x-hidden space-y-8">
         <div className="text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-blue-500 dark:text-blue-400">{content.eyebrow}</p>
